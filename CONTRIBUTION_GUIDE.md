@@ -9,6 +9,8 @@ Thank you for contributing to our project! To maintain a high standard of code q
    - Make sure the branch name includes the issue topic and number.
    - **Do NOT** put the issue number at the beginning of the branch name.
    - Example: `feature/issue-123-improve-login`
+   NOT:
+   - `#34-new-login-button`
 
 ## Before Opening a Pull Request (PR) - YOU MUST:
 
@@ -28,6 +30,7 @@ Thank you for contributing to our project! To maintain a high standard of code q
 5. **Sync with Dev Branch**
    - Pull from the `dev` branch.
    - Fix any merge conflicts and commit your fixes.
+   - run all the unit tests and make sure all tests pass.
 
 ## Opening a Pull Request
 
