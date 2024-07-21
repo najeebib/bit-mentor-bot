@@ -40,7 +40,7 @@ from my_bot.handlers import start_handler
 ## Naming
 
 2.1 **Variables and Functions**
-* Use lowercase words separated by underscores.
+* Use lowercase words separated by underscores. (snake_case)
 ```python
 def process_message(update, context): 
 	message_text = update.message.text
