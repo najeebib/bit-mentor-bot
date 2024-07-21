@@ -6,9 +6,6 @@
 - [Architecture](#architecture)
 - [Technologies](#technologies)
 - [Workflow](#workflow)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
 
 ## Team Members
 - **Muhammad Sarahni**
