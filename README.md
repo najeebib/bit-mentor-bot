@@ -26,6 +26,7 @@ The Bit Mentor Bot is a Telegram bot designed to interact with users by asking q
     - The backend server that the bot communicates with to fetch and submit questions and answers. (Hosted in a separate repository)
 
 ### Diagram
+The bot part is our reposotory, but the diagram entails the entire project
 ![bot](https://github.com/user-attachments/assets/8f0ff1d0-58c1-48ef-a2dc-343d8de97c26)
 
 
