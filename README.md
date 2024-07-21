@@ -27,7 +27,7 @@ The Bit Mentor Bot is a Telegram bot designed to interact with users by asking q
 
 ### Diagram
 
-
+**add picture/diagram workflow
 
 ### General Architecture
 - **Telegram Bot**: Interacts with users, sending and receiving messages through the `python-telegram-bot` library.
@@ -38,7 +38,7 @@ The Bit Mentor Bot is a Telegram bot designed to interact with users by asking q
 1. **User Interaction**:
     - Users interact with the Telegram bot by sending messages and commands.
 2. **API Requests**:
-    - The Telegram bot sends API requests to the FastAPI server to fetch questions and submit answers.
+    - The Telegram bot sends API requests to the FastAPI server to fetch questions and submit answers.(including the correct/wong answer but hidden)
 3. **Response**:
     - The FastAPI server processes these requests and sends appropriate responses back to the Telegram bot, which then communicates these responses to the user.
 
