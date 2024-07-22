@@ -50,3 +50,16 @@ The bot part this reposotory, but the diagram entails the entire project
 - **Backend Server**: [FastAPI](https://fastapi.tiangolo.com/) (details in separate repository)
 - **Hosting**: [AWS](https://aws.amazon.com/)
 
+## How to run
+
+In root directory, open terminal and run these commands  
+```
+pip install -r requirements.txt
+python -m bot.main
+```
+
+
+To run tests use this command  
+```
+pytest
+```
