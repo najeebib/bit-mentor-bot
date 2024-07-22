@@ -50,6 +50,10 @@ The bot part this reposotory, but the diagram entails the entire project
 - **Backend Server**: [FastAPI](https://fastapi.tiangolo.com/) (details in separate repository)
 - **Hosting**: [AWS](https://aws.amazon.com/)
 
+## Enviroment variables
+There needs to be an enviroment variable for the server link
+BOT_TOKEN="Your_bot_token"
+
 ## How to run
 
 In root directory, open terminal and run these commands  
