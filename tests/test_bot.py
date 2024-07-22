@@ -1,6 +1,6 @@
 import os
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 from telegram import Update, Message, User, Chat, Bot
 from dotenv import load_dotenv
 
@@ -8,6 +8,8 @@ from bot.handlers.some_handler import start  # Import the start handler from han
 
 load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+
+PUBLIC_IP = "8.8.8.8"  # Example public IP address for testing
 
 @pytest.mark.asyncio
 async def test_start():
@@ -31,17 +33,17 @@ async def test_start():
     context.bot = bot
 
     # Call the start function
-    await start(update, context)
+    await start(update, context, PUBLIC_IP)
 
     # Custom check for send_message call
     send_message_called = False
     for call in bot.send_message.await_args_list:
         call_args, call_kwargs = call
-        if call_kwargs.get('chat_id') == 123 and call_kwargs.get('text') == 'Hello! This is your bot.':
+        if call_kwargs.get('chat_id') == 123 and call_kwargs.get('text') == f'Hello! This is your bot.\nPublic IP: {PUBLIC_IP}':
             send_message_called = True
             break
 
-    assert send_message_called, "send_message(chat_id=123, text='Hello! This is your bot.') await not found"
+    assert send_message_called, "send_message(chat_id=123, text='Hello! This is your bot.\nPublic IP: {PUBLIC_IP}') await not found"
 
 if __name__ == '__main__':
     pytest.main()
