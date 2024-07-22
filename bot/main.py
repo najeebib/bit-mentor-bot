@@ -7,7 +7,7 @@ from bot.handlers.some_handler import start, connect
 # Load environment variables from .env file
 load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
-SERVER_URL = os.getenv('SERVER_URL')
+
 
 def get_public_ip():
     response = requests.get('https://api.ipify.org?format=json')
@@ -31,12 +31,7 @@ def main():
     # Start the Bot
     application.run_polling()
 
-     # Set up webhook
-    webhook_url = f"{SERVER_URL}/{BOT_TOKEN}"
-    application.bot.set_webhook(webhook_url)
 
-    # Start the webhook
-    application.run_webhook(listen="0.0.0.0", port=int(os.environ.get('PORT', 8443)), url_path=BOT_TOKEN)
 
 if __name__ == '__main__':
     main()
