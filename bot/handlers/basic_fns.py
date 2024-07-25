@@ -56,15 +56,29 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     response = requests.post(f"{Settings.SERVER_ADDRESS}/generate-question", json={"difficulty": difficulty, "topic": topic}).json()
     questions = response["question"]
-    answers = [response["answer"], "option 2", "option 3", "option 4"]
+    answers = [response["answer"]]
 
     context.user_data['questions'] = questions
-    context.user_data['answers'] = [response["answer"]]
+    context.user_data['answers'] = answers
     context.user_data['corect_answer'] = 0
 
+    reply = f"Question: {questions[0]}\n"
+    for i in range(len(answers)):
+        reply += f"Answer {i+1}: {answers[i]}\n"
     
-    await update.message.reply_text("got question from server")
+    await update.message.reply_text(reply)
+    return USER_ANSWER
 
+async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    user_answer = update.message.text
+    correct_answer = context.user_data['corect_answer'] + 1
+
+    if int(user_answer) == correct_answer:
+        await update.message.reply_text("Correct!")
+    else:
+        await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.")
+
+    return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Operation canceled.")

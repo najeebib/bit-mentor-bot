@@ -1,6 +1,6 @@
 import requests
 from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes
-from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, cancel
+from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, user_answer_response, cancel
 from bot.config.settings import Settings
 
 # Load environment variables from .env file
@@ -30,7 +30,8 @@ def main():
                 states={
                     DIFFICULTY: [MessageHandler(filters.TEXT & ~filters.COMMAND, difficulty_response)],
                     ANSWERS: [MessageHandler(filters.TEXT & ~filters.COMMAND, answers_response)],
-                    TOPIC: [MessageHandler(filters.TEXT & ~filters.COMMAND, topic_response)]
+                    TOPIC: [MessageHandler(filters.TEXT & ~filters.COMMAND, topic_response)],
+                    USER_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, user_answer_response)],
                 },
                 fallbacks=[CommandHandler('cancel', cancel)],
             )
