@@ -64,6 +64,7 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     
     await update.message.reply_text("got question from server")
+    return ConversationHandler.END
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
