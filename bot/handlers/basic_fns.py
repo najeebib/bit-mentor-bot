@@ -69,30 +69,53 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         return USER_ANSWER
     else:
         response = requests.post(f"{Settings.SERVER_ADDRESS}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
-        question = response["question"]
-        answers = [response["answer"]]
+        #response = {"question_text": "What is 2+2?", "options": ["2", "4", "6", "8"], "correct_answer": 1}
+        question = response["question_text"]
+        answers = response["options"]
         correct_answer_index = response["correct_answer"]
 
         context.user_data['question_text'] = question
         context.user_data['options'] = answers
         context.user_data['correct_answer'] = correct_answer_index
 
-        reply = f"Question: {question[0]}\n"
+        reply = f"Question: {question}\n"
         for i, answer in enumerate(answers):
-            reply += f"({i+1}) {answer[0]}.\n"
+            reply += f"({i+1}) {answer}.\n"
 
-        await update.message.reply_text(reply)
+        if num_of_answers == "2":
+            button1 = KeyboardButton("1")
+            button2 = KeyboardButton("2")
+            answers_keyboard = ReplyKeyboardMarkup([[button1, button2]], resize_keyboard=True, one_time_keyboard=True)
+        elif num_of_answers == "3":
+            button1 = KeyboardButton("1")
+            button2 = KeyboardButton("2")
+            button3 = KeyboardButton("3")
+            answers_keyboard = ReplyKeyboardMarkup([[button1, button2, button3]], resize_keyboard=True, one_time_keyboard=True)
+        else:
+            button1 = KeyboardButton("1")
+            button2 = KeyboardButton("2")
+            button3 = KeyboardButton("3")
+            button4 = KeyboardButton("4")
+            answers_keyboard = ReplyKeyboardMarkup([[button1, button2], [button3, button4]], resize_keyboard=True, one_time_keyboard=True)
+
+
+        await update.message.reply_text(reply, reply_markup=answers_keyboard)
         return USER_ANSWER
 
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    user_answer = update.message.text
-    correct_answer = context.user_data['corect_answer'] + 1
-
-    if int(user_answer) == correct_answer:
-        await update.message.reply_text("Correct!")
+    num_of_answers = context.user_data['num_of_answers']
+    if num_of_answers == 1:
+        await update.message.reply_text("This feature is not available for open ended questions.")
     else:
-        await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.")
+        options = context.user_data['options'] 
+        user_answer = int(update.message.text) - 1
+        correct_answer = int(context.user_data['correct_answer'])
+        if user_answer == correct_answer:
+            await update.message.reply_text("Correct!")
+        else:
+            await update.message.reply_text("Incorrect. The correct answer is " + options[correct_answer])
+
 
     return ConversationHandler.END
 
