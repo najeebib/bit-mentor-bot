@@ -1,9 +1,10 @@
 import requests
 from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes
-from bot.handlers.basic_fns import start, connect, help, question_command
+from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, cancel
 from bot.config.settings import Settings
-
 # Load environment variables from .env file
+
+DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 def get_public_ip():
     response = requests.get('https://api.ipify.org?format=json')
@@ -23,9 +24,18 @@ def main():
             start_handler = CommandHandler('start', lambda update, context: start(update, context, public_ip))
             connect_handler = CommandHandler('connect', lambda update, context: connect(update, context))
             help_handler = CommandHandler('help', lambda update, context: help(update, context))
-            question_handler = CommandHandler('question', lambda update, context: question_command(update, context))
-    
-            application.add_handler(question_handler)
+
+            conv_handler = ConversationHandler(
+                entry_points=[CommandHandler('question', question_command)],
+                states={
+                    DIFFICULTY: [MessageHandler(filters.TEXT & ~filters.COMMAND, difficulty_response)],
+                    ANSWERS: [MessageHandler(filters.TEXT & ~filters.COMMAND, answers_response)],
+                    TOPIC: [MessageHandler(filters.TEXT & ~filters.COMMAND, topic_response)]
+                },
+                fallbacks=[CommandHandler('cancel', cancel)],
+            )
+
+            application.add_handler(conv_handler)
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
             application.add_handler(help_handler)
