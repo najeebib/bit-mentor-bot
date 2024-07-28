@@ -9,10 +9,11 @@ difficulty_button3 = KeyboardButton("hard")
 difficulty_button4 = KeyboardButton("none")
 keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2], [difficulty_button3, difficulty_button4]], resize_keyboard=True, one_time_keyboard=True)
 
-answers_button1 = KeyboardButton("2")
-answers_button2 = KeyboardButton("3")
-answers_button3 = KeyboardButton("4")
-keyboard2 = ReplyKeyboardMarkup([[answers_button1, answers_button2, answers_button3]], resize_keyboard=True, one_time_keyboard=True)
+answers_button1 = KeyboardButton("1")
+answers_button2 = KeyboardButton("2")
+answers_button3 = KeyboardButton("3")
+answers_button4 = KeyboardButton("4")
+keyboard2 = ReplyKeyboardMarkup([[answers_button1, answers_button2], [answers_button3, answers_button4]], resize_keyboard=True, one_time_keyboard=True)
 
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
@@ -40,7 +41,7 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     num_of_answers = update.message.text
-    if num_of_answers not in ["2", "3", "4"]:
+    if num_of_answers not in ["1", "2", "3", "4"]:
         await update.message.reply_text("Invalid number of answers. Please choose from the keyboard options.")
         return ANSWERS
 
@@ -53,21 +54,36 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.user_data['topic'] = topic
     difficulty = context.user_data['difficulty']
     num_of_answers = context.user_data['num_of_answers']
+    if num_of_answers == "1":
+        response = requests.post(f"{Settings.SERVER_ADDRESS}/generate-question", json={"difficulty": difficulty, "topic": topic}).json()
+        question = response["question"]
+        answers = [response["answer"]]
 
-    response = requests.post(f"{Settings.SERVER_ADDRESS}/generate-question", json={"difficulty": difficulty, "topic": topic}).json()
-    questions = response["question"]
-    answers = [response["answer"]]
+        context.user_data['questions'] = question
+        context.user_data['answers'] = answers
+        context.user_data['correct_answer'] = 0
 
-    context.user_data['questions'] = questions
-    context.user_data['answers'] = answers
-    context.user_data['corect_answer'] = 0
-
-    reply = f"Question: {questions[0]}\n"
-    for i in range(len(answers)):
-        reply += f"Answer {i+1}: {answers[i]}\n"
+        reply = f"Question: {question}\n"
     
-    await update.message.reply_text(reply)
-    return USER_ANSWER
+        await update.message.reply_text(reply)
+        return USER_ANSWER
+    else:
+        response = requests.post(f"{Settings.SERVER_ADDRESS}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
+        question = response["question"]
+        answers = [response["answer"]]
+        correct_answer_index = response["correct_answer"]
+
+        context.user_data['question_text'] = question
+        context.user_data['options'] = answers
+        context.user_data['correct_answer'] = correct_answer_index
+
+        reply = f"Question: {question[0]}\n"
+        for i, answer in enumerate(answers):
+            reply += f"({i+1}) {answer[0]}.\n"
+
+        await update.message.reply_text(reply)
+        return USER_ANSWER
+
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user_answer = update.message.text
