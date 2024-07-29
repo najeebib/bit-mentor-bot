@@ -64,31 +64,37 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         context.user_data['correct_answer'] = 0
 
         reply = f"Question: {question}\n"
-    
         await update.message.reply_text(reply)
         return USER_ANSWER
     else:
         response = requests.post(f"{Settings.SERVER_ADDRESS}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
-        question = response["question"]
-        answers = [response["answer"]]
+        question = response["question_text"]
+        answers = response["options"]
         correct_answer_index = response["correct_answer"]
 
         context.user_data['question_text'] = question
         context.user_data['options'] = answers
         context.user_data['correct_answer'] = correct_answer_index
+        context.user_data['explenations'] = response["details"]
 
-        reply = f"Question: {question[0]}\n"
+
+        reply = f"Question: {question}\n"
         for i, answer in enumerate(answers):
-            reply += f"({i+1}) {answer[0]}.\n"
-
+            reply += f"({i+1}) {answer}.\n"
+        
         await update.message.reply_text(reply)
         return USER_ANSWER
 
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    if 'users' not in context.user_data:
+            context.user_data['users'] = []
     user_answer = update.message.text
-    correct_answer = context.user_data['corect_answer'] + 1
-
+    correct_answer = context.user_data['correct_answer'] + 1
+    user_id = update.message.from_user.id
+    user_entry = {'user_id': user_id, 'answer': user_answer}
+    context.user_data['users'].append(user_entry)
+    requests.post(f"{Settings.SERVER_ADDRESS}/insert-question", json=context.user_data).json()
     if int(user_answer) == correct_answer:
         await update.message.reply_text("Correct!")
     else:
