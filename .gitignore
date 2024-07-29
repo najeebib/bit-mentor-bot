@@ -163,4 +163,18 @@ cython_debug/
 .idea/
 inspectionProfiles/
 .idea/misc.xml
+
+# Environment variables
 .env
+
+# Log files
+bot/config/app.log
+config/app.log
+app.log
+
+
+# Ignore log files
+*.log
+
+# Ignore virtual environment
+.venv/

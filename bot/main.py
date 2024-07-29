@@ -2,17 +2,30 @@ import os
 import requests
 from dotenv import load_dotenv
 from telegram.ext import Application, CommandHandler
-from bot.handlers.basic_fns import start, connect
+import logging.config
+from config.logging_config import logging_config
+from handlers.basic_fns import start, connect
 
 # Load environment variables from .env file
 load_dotenv()
 
+# Configure logging
+logging.config.dictConfig(logging_config)
+logger = logging.getLogger(__name__)
+
 def get_public_ip():
-    response = requests.get('https://api.ipify.org?format=json')
-    response.raise_for_status()
-    return response.json()['ip']
+    try:
+        response = requests.get('https://api.ipify.org?format=json')
+        response.raise_for_status()
+        ip = response.json()['ip']
+        logger.info(f"Fetched public IP: {ip}")
+        return ip
+    except Exception as e:
+        logger.error("Error fetching public IP", exc_info=True)
+        raise
 
 def main():
+    logger.info("Starting bot application")
     # Fetch the public IP address
     public_ip = get_public_ip()
 
@@ -28,13 +41,14 @@ def main():
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
 
+            logger.info("Bot handlers added and polling started")
             # Start the Bot
             application.run_polling()
         else:
             raise Exception("BOT_TOKEN not loaded correctly as env var")
     except Exception as e:
-        print("error in loading BOT_TOKEN",e)
-        return e
+        logger.error("Error in loading BOT_TOKEN", exc_info=True)
+        raise
 
 if __name__ == '__main__':
     main()

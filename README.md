@@ -52,8 +52,7 @@ The bot part this reposotory, but the diagram entails the entire project
 
 ## Enviroment variables
 There needs to be an enviroment variable for the server link
-BOT_TOKEN="Your_bot_token"
-
+- `BOT_TOKEN`: Token for the Telegram bot.
 ## How to run
 
 In root directory, open terminal and run these commands  
@@ -67,3 +66,33 @@ To run tests use this command
 ```
 pytest
 ```
+
+
+
+## Logging
+
+Logging is configured to write to `app.log` with log rotation. Each log entry contains the date, request ID, log level, and message.
+
+## How to Run
+
+1. Install dependencies:
+pip install -r requirements.txt
+2. Run the bot:
+python -m bot.main
+
+
+## Live Log Monitoring
+
+On Linux, you can use the `tail -f` command to monitor the log file in real-time:
+
+tail -f app.log
+
+
+## How to Test
+
+Run the tests:
+pytest
+
+
+
+
