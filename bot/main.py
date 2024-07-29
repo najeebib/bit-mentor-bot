@@ -1,8 +1,7 @@
 import requests
 from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes
 from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, cancel
-from bot.config.settings import Settings
-
+from bot.setting.config import config
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 def get_public_ip():
