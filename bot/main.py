@@ -3,7 +3,6 @@ from telegram.ext import Application, CommandHandler, MessageHandler, Conversati
 from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, user_answer_response, cancel
 from bot.config.settings import Settings
 
-# Load environment variables from .env file
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 def get_public_ip():

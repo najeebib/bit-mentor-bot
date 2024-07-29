@@ -9,6 +9,7 @@ difficulty_button3 = KeyboardButton("hard")
 difficulty_button4 = KeyboardButton("none")
 keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2], [difficulty_button3, difficulty_button4]], resize_keyboard=True, one_time_keyboard=True)
 
+
 answers_button1 = KeyboardButton("1")
 answers_button2 = KeyboardButton("2")
 answers_button3 = KeyboardButton("3")
@@ -41,6 +42,7 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     num_of_answers = update.message.text
+
     if num_of_answers not in ["1", "2", "3", "4"]:
         await update.message.reply_text("Invalid number of answers. Please choose from the keyboard options.")
         return ANSWERS
@@ -94,12 +96,18 @@ async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYP
     user_id = update.message.from_user.id
     user_entry = {'user_id': user_id, 'answer': user_answer}
     context.user_data['users'].append(user_entry)
-    requests.post(f"{Settings.SERVER_ADDRESS}/insert-question", json=context.user_data).json()
+    response = requests.post(f"{Settings.SERVER_ADDRESS}/insert-question", json=context.user_data).json()
+    question_id = response.get('inserted_id')  # Get the question ID from the response
     if int(user_answer) == correct_answer:
         await update.message.reply_text("Correct!")
     else:
         await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.")
 
+    return ConversationHandler.END
+
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Operation canceled.")
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
