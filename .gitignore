@@ -164,3 +164,4 @@ cython_debug/
 inspectionProfiles/
 .idea/misc.xml
 .env
+bit-mentor-dev-aws.pem
