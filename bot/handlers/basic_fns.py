@@ -69,8 +69,8 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         return USER_ANSWER
     else:
         response = requests.post(f"{Settings.SERVER_ADDRESS}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
-        question = response["question"]
-        answers = [response["answer"]]
+        question = response["question_text"]
+        answers = response["options"]
         correct_answer_index = response["correct_answer"]
 
         context.user_data['question_text'] = question
@@ -99,6 +99,7 @@ async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYP
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Operation canceled.")
     return ConversationHandler.END
+
 
 async def connect(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:

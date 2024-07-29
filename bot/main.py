@@ -3,7 +3,6 @@ from telegram.ext import Application, CommandHandler, MessageHandler, Conversati
 from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, user_answer_response, cancel
 from bot.config.settings import Settings
 
-# Load environment variables from .env file
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 def get_public_ip():
@@ -24,7 +23,6 @@ def main():
             start_handler = CommandHandler('start', lambda update, context: start(update, context, public_ip))
             connect_handler = CommandHandler('connect', lambda update, context: connect(update, context))
             help_handler = CommandHandler('help', lambda update, context: help(update, context))
-
             conv_handler = ConversationHandler(
                 entry_points=[CommandHandler('question', question_command)],
                 states={
@@ -37,8 +35,6 @@ def main():
             )
 
             application.add_handler(conv_handler)
-
-
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
             application.add_handler(help_handler)
