@@ -1,10 +1,7 @@
 import argparse
 import os
-import sys
 
 from dotenv import load_dotenv
-
-
 class Config:
     def __init__(self, env: str):
         self.env = env
@@ -44,7 +41,6 @@ try:
     parser.add_argument('--env', default='dev', choices=['dev', 'prod'], help="Specify the environment (dev or prod)")
     args = parser.parse_args()
     config = Config(args.env)
-
 
 except FileNotFoundError as e:
     print(e)
