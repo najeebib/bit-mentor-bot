@@ -1,8 +1,7 @@
 import requests
 from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes
 from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, cancel
-from bot.config.settings import Settings
-
+from bot.setting.config import config
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 def get_public_ip():
@@ -16,7 +15,7 @@ def main():
 
     # Create the Application and pass it your bot's token
     try:
-        BOT_TOKEN = Settings.BOT_TOKEN
+        BOT_TOKEN = config.BOT_TOKEN
         if BOT_TOKEN:
             application = Application.builder().token(BOT_TOKEN).build()
             # Register the /start command with the start function
