@@ -1,7 +1,7 @@
 import requests
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
-from bot.setting.config import Config
+from bot.setting.config import *
 
 difficulty_button1 = KeyboardButton("easy")
 difficulty_button2 = KeyboardButton("medium")
@@ -57,7 +57,7 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     difficulty = context.user_data['difficulty']
     num_of_answers = context.user_data['num_of_answers']
     if num_of_answers == "1":
-        response = requests.post(f"{Config.SERVER_URL}/generate-question", json={"difficulty": difficulty, "topic": topic}).json()
+        response = requests.post(f"{config.SERVER_URL}/generate-question", json={"difficulty": difficulty, "topic": topic}).json()
         question = response["question"]
         answers = [response["answer"]]
 
@@ -69,7 +69,7 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await update.message.reply_text(reply)
         return USER_ANSWER
     else:
-        response = requests.post(f"{Config.SERVER_URL}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
+        response = requests.post(f"{config.SERVER_URL}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
         question = response["question_text"]
         answers = response["options"]
         correct_answer_index = response["correct_answer"]
@@ -96,7 +96,7 @@ async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYP
     user_id = update.message.from_user.id
     user_entry = {'user_id': user_id, 'answer': user_answer}
     context.user_data['users'].append(user_entry)
-    response = requests.post(f"{Config.SERVER_URL}/insert-question", json=context.user_data).json()
+    response = requests.post(f"{config.SERVER_URL}/insert-question", json=context.user_data).json()
     question_id = response.get('inserted_id')  # Get the question ID from the response
     if int(user_answer) == correct_answer:
         await update.message.reply_text("Correct!")
@@ -116,7 +116,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def connect(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
-        response = requests.get(f"{Config.SERVER_URL}/")
+        response = requests.get(f"{config.SERVER_URL}/")
         response.raise_for_status()
         data = response.json()
         await update.message.reply_text(data["message"])
