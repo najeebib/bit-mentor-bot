@@ -51,9 +51,12 @@ The bot part this reposotory, but the diagram entails the entire project
 - **Hosting**: [AWS](https://aws.amazon.com/)
 
 ## Enviroment variables  
+These files should be located in the root directory of your project
 * For Dev:
+  .env_dev
 - `SERVER_URL_DEV`: Url of server.
 - `BOT_TOKEN_DEV`: token of the bot.
+  .env_prod
 * For Prod:
 - `SERVER_URL_PROD`: Url of server.
 - `BOT_TOKEN_PROD`: token of the bot.
