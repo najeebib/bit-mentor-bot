@@ -10,14 +10,14 @@ difficulty_button1 = KeyboardButton("easy")
 difficulty_button2 = KeyboardButton("medium")
 difficulty_button3 = KeyboardButton("hard")
 difficulty_button4 = KeyboardButton("none")
-keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2], [difficulty_button3, difficulty_button4]],
+difficulty_keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2,difficulty_button3, difficulty_button4]],
                                resize_keyboard=True, one_time_keyboard=True)
 
-answers_button1 = KeyboardButton("2")
-answers_button2 = KeyboardButton("3")
-answers_button3 = KeyboardButton("4")
-keyboard2 = ReplyKeyboardMarkup([[answers_button1, answers_button2, answers_button3]], resize_keyboard=True,
-                                one_time_keyboard=True)
+answers_button1 = KeyboardButton("1")
+answers_button2 = KeyboardButton("2")
+answers_button3 = KeyboardButton("3")
+answers_button4 = KeyboardButton("4")
+answers_keyboard = ReplyKeyboardMarkup([[answers_button1, answers_button2], [answers_button3, answers_button4]], resize_keyboard=True, one_time_keyboard=True)
 
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
@@ -32,22 +32,22 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "need to enter a difficulty\nThen enter the number of answers\nThen enter the topic")
 
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("Choose difficulty level:", reply_markup=keyboard)
+    await update.message.reply_text("Choose difficulty level:", reply_markup=difficulty_keyboard)
     return DIFFICULTY
 
 async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     difficulty = update.message.text
-    if difficulty not in ["easy", "medium", "hard", "none"]:
+    if difficulty and difficulty.lower() not in ["easy", "medium", "hard", "none"]:
         await update.message.reply_text("Invalid difficulty. Please choose from the keyboard options.")
         return DIFFICULTY
 
     context.user_data['difficulty'] = difficulty
-    await update.message.reply_text("Enter number of answers:", reply_markup=keyboard2)
+    await update.message.reply_text("Enter number of answers:", reply_markup=answers_keyboard)
     return ANSWERS
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     num_of_answers = update.message.text
-    if num_of_answers not in ["2", "3", "4"]:
+    if num_of_answers not in ["1", "2", "3", "4"]:
         await update.message.reply_text("Invalid number of answers. Please choose from the keyboard options.")
         return ANSWERS
 
@@ -60,16 +60,35 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.user_data['topic'] = topic
     difficulty = context.user_data['difficulty']
     num_of_answers = context.user_data['num_of_answers']
+    gen_question_req_body = {"difficulty": difficulty, "topic": topic}
+    if int(num_of_answers) > 1:
+        gen_question_req_body["answers_count"] = num_of_answers
+        try:
+            response = requests.post(f"{config.SERVER_URL}/generate-question", json=gen_question_req_body).json()
+            question = response["question"]
+            answers = response["optional_answers"]
+            context.user_data['question'] = question
+            context.user_data['answers'] = answers
+            context.user_data["correct_answer"] = response["correct_answer"] if "correct_answer" in response else 0
+            reply = f"Question: {question[0]}\n"
+            if int(num_of_answers) > 1:
+                for i, answer in enumerate(answers):
+                    reply += f"({i+1}) {answer[0]}.\n"
+            await update.message.reply_text(reply)
+            return USER_ANSWER
+        except Exception as e:
+            print("error in gen question: ",e)
+            return -1
 
-    response = requests.post(f"{config.SERVER_URL}/generate-question",
-                             json={"difficulty": difficulty, "topic": topic}).json()
-    question = response["question"]
+async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    user_answer = update.message.text
+    correct_answer = context.user_data['corect_answer'] + 1
 
-    context.user_data['questions'] = question
-    context.user_data['answers'] = [response["answer"]]
-    context.user_data['corect_answer'] = 0
+    if int(user_answer) == correct_answer:
+        await update.message.reply_text("Correct!")
+    else:
+        await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.")
 
-    await update.message.reply_text(question)
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
