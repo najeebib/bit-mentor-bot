@@ -2,8 +2,9 @@ import requests
 import os
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
-from config.logging_config import logging_config 
+from bot.config.logging_config import logging_config
 from loguru import logger
+import bot.config.settings as config
 
 # Bot commands
 difficulty_button1 = KeyboardButton("easy")

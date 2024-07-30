@@ -1,13 +1,10 @@
 import os
 import requests
 from dotenv import load_dotenv
-from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler
 import logging.config
 from bot.config.logging_config import logging_config
-from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, user_answer_response, cancel
-from bot.setting.config import config
-
-DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
+from bot.handlers.basic_fns import start, connect
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,22 +37,9 @@ def main():
             # Register the /start command with the start function
             start_handler = CommandHandler('start', lambda update, context: start(update, context, public_ip))
             connect_handler = CommandHandler('connect', lambda update, context: connect(update, context))
-            help_handler = CommandHandler('help', lambda update, context: help(update, context))
-            conv_handler = ConversationHandler(
-                entry_points=[CommandHandler('question', question_command)],
-                states={
-                    DIFFICULTY: [MessageHandler(filters.TEXT & ~filters.COMMAND, difficulty_response)],
-                    ANSWERS: [MessageHandler(filters.TEXT & ~filters.COMMAND, answers_response)],
-                    TOPIC: [MessageHandler(filters.TEXT & ~filters.COMMAND, topic_response)],
-                    USER_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, user_answer_response)],
-                },
-                fallbacks=[CommandHandler('cancel', cancel)],
-            )
 
-            application.add_handler(conv_handler)
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
-            application.add_handler(help_handler)
 
             logger.info("Bot handlers added and polling started")
             # Start the Bot
@@ -68,4 +52,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
