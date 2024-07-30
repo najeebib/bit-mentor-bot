@@ -8,7 +8,7 @@ difficulty_button1 = KeyboardButton("easy")
 difficulty_button2 = KeyboardButton("medium")
 difficulty_button3 = KeyboardButton("hard")
 difficulty_button4 = KeyboardButton("none")
-difficulty_keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2], [difficulty_button3, difficulty_button4]],
+difficulty_keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2,difficulty_button3, difficulty_button4]],
                                resize_keyboard=True, one_time_keyboard=True)
 
 answers_button1 = KeyboardButton("1")
@@ -19,22 +19,18 @@ answers_keyboard = ReplyKeyboardMarkup([[answers_button1, answers_button2], [ans
 
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, public_ip: str) -> None:
     message = f"Hello! This is your bot.\nPublic IP: {public_ip}"
     await update.message.reply_text(message)
-
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
         "To get a question you need to use /question\nYou will be asked to enter the required information\nFirst you "
         "need to enter a difficulty\nThen enter the number of answers\nThen enter the topic")
 
-
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Choose difficulty level:", reply_markup=difficulty_keyboard)
     return DIFFICULTY
-
 
 async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     difficulty = update.message.text
@@ -46,7 +42,6 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
     await update.message.reply_text("Enter number of answers:", reply_markup=answers_keyboard)
     return ANSWERS
 
-
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     num_of_answers = update.message.text
     if num_of_answers not in ["1", "2", "3", "4"]:
@@ -57,13 +52,11 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     await update.message.reply_text("Enter a topic:")
     return TOPIC
 
-
 async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     topic = update.message.text
     context.user_data['topic'] = topic
     difficulty = context.user_data['difficulty']
     num_of_answers = context.user_data['num_of_answers']
-    print('num_of_answers: ', num_of_answers)
     gen_question_req_body = {"difficulty": difficulty, "topic": topic}
     if int(num_of_answers) > 1:
         gen_question_req_body["answers_count"] = num_of_answers
@@ -71,7 +64,7 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             response = requests.post(f"{config.SERVER_URL}/generate-question", json=gen_question_req_body).json()
             print('response: ', response)
             question = response["question"]
-            answers = response["options"]
+            answers = response["optional_answers"]
             context.user_data['question'] = question
             context.user_data['answers'] = answers
             context.user_data["correct_answer"] = response["correct_answer"] if "correct_answer" in response else 0
