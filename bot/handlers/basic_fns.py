@@ -1,7 +1,7 @@
 import requests
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
-from bot.setting import Config
+from bot.setting.config import Config
 
 difficulty_button1 = KeyboardButton("easy")
 difficulty_button2 = KeyboardButton("medium")
