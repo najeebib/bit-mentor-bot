@@ -62,7 +62,6 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         gen_question_req_body["answers_count"] = num_of_answers
         try:
             response = requests.post(f"{config.SERVER_URL}/generate-question", json=gen_question_req_body).json()
-            print('response: ', response)
             question = response["question"]
             answers = response["optional_answers"]
             context.user_data['question'] = question
