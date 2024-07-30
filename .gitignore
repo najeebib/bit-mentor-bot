@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env_*
 .venv
 env/
 venv/
@@ -163,6 +164,3 @@ cython_debug/
 .idea/
 inspectionProfiles/
 .idea/misc.xml
-.env
-.env_prod
-.env_dev

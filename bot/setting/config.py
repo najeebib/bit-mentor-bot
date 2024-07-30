@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 class Config:
     def __init__(self, env: str):
         self.env = env
-        self.load_environment()
         self.SERVER_URL = ""
         self.BOT_TOKEN = ""
+        self.load_environment()
         self.set_parameters()
 
     def load_environment(self):
