@@ -52,12 +52,13 @@ The bot part this reposotory, but the diagram entails the entire project
 
 ## Enviroment variables  
 These files should be located in the root directory of your project
-* For Dev:
-  .env_dev
+* .env_dev For Dev:
+
 - `SERVER_URL_DEV`: Url of server.
 - `BOT_TOKEN_DEV`: token of the bot.
-  .env_prod
-* For Prod:
+
+
+* .env_prod For Prod:
 - `SERVER_URL_PROD`: Url of server.
 - `BOT_TOKEN_PROD`: token of the bot.
 
