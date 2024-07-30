@@ -5,6 +5,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, Conversati
 import logging.config
 from bot.config.logging_config import logging_config
 from bot.handlers.basic_fns import start, connect, help, question_command, difficulty_response, answers_response, topic_response, user_answer_response, cancel
+from bot.setting.config import config
 
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
