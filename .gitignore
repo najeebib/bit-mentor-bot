@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env_*
 .venv
 env/
 venv/
@@ -171,7 +172,6 @@ inspectionProfiles/
 bot/config/app.log
 config/app.log
 app.log
-
 
 # Ignore log files
 *.log
