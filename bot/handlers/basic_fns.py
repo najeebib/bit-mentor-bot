@@ -63,36 +63,25 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.user_data['topic'] = topic
     difficulty = context.user_data['difficulty']
     num_of_answers = context.user_data['num_of_answers']
-    if num_of_answers == "1":
-        response = requests.post(f"{config.SERVER_URL}/generate-question", json={"difficulty": difficulty, "topic": topic}).json()
-        question = response["question"]
-        answers = [response["answer"]]
-
-        context.user_data['questions'] = question
-        context.user_data['answers'] = answers
-        context.user_data['correct_answer'] = 0
-
-        reply = f"Question: {question}\n"
-    
-        await update.message.reply_text(reply)
-        return USER_ANSWER
-    else:
-        response = requests.post(f"{config.SERVER_URL}/questions/question", json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}).json()
-        question = response["question_text"]
-        answers = response["options"]
-        correct_answer_index = response["correct_answer"]
-
-        context.user_data['question_text'] = question
-        context.user_data['options'] = answers
-        context.user_data['correct_answer'] = correct_answer_index
-
-        reply = f"Question: {question[0]}\n"
-        for i, answer in enumerate(answers):
-            reply += f"({i+1}) {answer[0]}.\n"
-
-        await update.message.reply_text(reply)
-        return USER_ANSWER
-
+    gen_question_req_body = {"difficulty": difficulty, "topic": topic}
+    if int(num_of_answers) > 1:
+        gen_question_req_body["answers_count"] = num_of_answers
+        try:
+            response = requests.post(f"{config.SERVER_URL}/generate-question", json=gen_question_req_body).json()
+            question = response["question_text"]
+            answers = response["options"]
+            context.user_data['questions'] = question
+            context.user_data['answers'] = answers
+            context.user_data["correct_answer"] = response["correct_answer"] if "correct_answer" in response else 0
+            reply = f"Question: {question[0]}\n"
+            if int(num_of_answers) > 1:
+                for i, answer in enumerate(answers):
+                    reply += f"({i+1}) {answer[0]}.\n"
+            await update.message.reply_text(reply)
+            return USER_ANSWER
+        except Exception as e:
+            print(f"error in gen question: {e}")
+            return -1
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user_answer = update.message.text
