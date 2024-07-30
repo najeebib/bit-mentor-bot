@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env_*
 .venv
 env/
 venv/
@@ -162,6 +163,7 @@ cython_debug/
 #.idea/
 .idea/
 inspectionProfiles/
-.idea/misc.xml
 .env
 bit-mentor-dev-aws.pem
+.idea/misc.xml
+
