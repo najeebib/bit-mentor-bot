@@ -163,10 +163,12 @@ cython_debug/
 #.idea/
 .idea/
 inspectionProfiles/
+
 .idea/misc.xml
 
 # Environment variables
-.env
+
+
 
 # Log files
 bot/config/app.log
@@ -178,3 +180,8 @@ app.log
 
 # Ignore virtual environment
 .venv/
+
+.env
+bit-mentor-dev-aws.pem
+.idea/misc.xml
+
