@@ -22,14 +22,9 @@ logging_config = {
             'backupCount': 5,
             'encoding': 'utf8'
         },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'standard',
-        },
     },
     'root': {
-        'handlers': ['file', 'console'],
+        'handlers': ['file'],  # Only use the file handler
         'level': 'DEBUG',
     },
 }
