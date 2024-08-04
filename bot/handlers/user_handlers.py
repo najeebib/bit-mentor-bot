@@ -25,7 +25,7 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
     else:
         await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
 
-    explanation = f"Explanation:\n{context.user_data['explanation']}"
+    explanation = f"Explanation:\n{context.user_data['explanations'][0]}"
     await update.message.reply_text(explanation)
     
     return is_correct
@@ -50,9 +50,7 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    if 'users' not in context.user_data:
-        context.user_data['users'] = []
-   
+    context.user_data['users'] = []
     user_answer = update.message.text
     user_id = update.message.from_user.id
     user_entry = {'user_id': user_id, 'answer': user_answer}
