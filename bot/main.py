@@ -35,7 +35,7 @@ def main():
 
     # Create the Application and pass it your bot's token
     try:
-        BOT_TOKEN = os.getenv('BOT_TOKEN')
+        BOT_TOKEN = config.BOT_TOKEN
         if BOT_TOKEN:
             application = Application.builder().token(BOT_TOKEN).build()
             # Register the /start command with the start function
