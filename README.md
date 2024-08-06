@@ -50,37 +50,49 @@ The bot part this reposotory, but the diagram entails the entire project
 - **Backend Server**: [FastAPI](https://fastapi.tiangolo.com/) (details in separate repository)
 - **Hosting**: [AWS](https://aws.amazon.com/)
 
-## Enviroment variables  
-These files should be located in the root directory of your project
-* .env_dev For Dev:
+## Enviroment variables
+There needs to be an enviroment variable for the server link
+- `BOT_TOKEN`: Token for the Telegram bot.
+## How to run
 
-- `SERVER_URL_DEV`: Url of server.
-- `BOT_TOKEN_DEV`: token of the bot.
+In root directory, open terminal and run these commands  
+```
+pip install -r requirements.txt
+python -m bot.main
+```
 
 
-* .env_prod For Prod:
-- `SERVER_URL_PROD`: Url of server.
-- `BOT_TOKEN_PROD`: token of the bot.
+To run tests use this command  
+```
+pytest
+```
 
-## How to Run      
- In the root directory, open terminal and run these commands:        
-1.Install the required packages:    
 
-``` pip install -r requirements.txt ```
 
- 2.Run the server    
-* for Development    
-``` 
-python -m bot.main --env dev 
- ``` 
- * or simply:    
-``` 
-python -m bot.main  
- ```
- * for Production:    
-``` 
-python -m bot.main --env prod
- ``` 
+## Logging
 
-To run tests use this command      
-``` pytest ```
+Logging is configured to write to `app.log` with log rotation. Each log entry contains the date, request ID, log level, and message.
+
+## How to Run
+
+1. Install dependencies:
+pip install -r requirements.txt
+2. Run the bot:
+python -m bot.main
+
+
+## Live Log Monitoring
+
+On Linux, you can use the `tail -f` command to monitor the log file in real-time:
+
+tail -f app.log
+
+
+## How to Test
+
+Run the tests:
+pytest
+
+
+
+
