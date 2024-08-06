@@ -55,16 +55,16 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
     difficulty = context.user_data['difficulty']
 
     response = requests.post(
-        f"{config.SERVER_URL}/generate-question", 
-        json={"difficulty": difficulty, "topic": topic}
+        f"{config.SERVER_URL}/questions/", 
+        json={"difficulty": difficulty, "subject": topic}
     ).json()
 
-    context.user_data['questions'] = response["question"]
-    context.user_data['options'] = [response["answer"]]
-    context.user_data['correct_answer'] = response["answer"]
-    context.user_data['explanations'] = [response["explanation"]]
+    context.user_data['question_text'] = response["question_text"]
+    context.user_data['options'] = response["options"]
+    context.user_data['correct_answer'] = response["correct_answer"]
+    context.user_data['options'] = [response["options"]]
 
-    reply = f"Question: {response["question"]}\n"
+    reply = f"Question: {response['question']}\n"
     await update.message.reply_text(reply)
     
     return USER_ANSWER
@@ -75,16 +75,16 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
     num_of_answers = context.user_data['num_of_answers']
 
     response = requests.post(
-        f"{config.SERVER_URL}/questions/question", 
+        f"{config.SERVER_URL}/questions/", 
         json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}
     ).json()
 
-    context.user_data['questions'] = response["question_text"]
+    context.user_data['question_text'] = response["question_text"]
     context.user_data['options'] = response["options"]
     context.user_data['correct_answer'] = response["correct_answer"]
-    context.user_data['explanations'] = response["details"]
+    context.user_data['details'] = response["details"]
 
-    reply = f"Question: {response["question_text"]}\n"
+    reply = f"Question: {response['question_text']}\n"
     for i, answer in enumerate(response["options"]):
         reply += f"({i+1}) {answer}.\n"
     
