@@ -8,9 +8,6 @@ from bot.handlers.question_handlers import *
 from bot.handlers.user_handlers import *
 from bot.setting.config import *
 
-
-
-
 # Configure logging
 logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
