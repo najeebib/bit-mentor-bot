@@ -5,7 +5,8 @@ from bot.setting.config import config
 
 
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    response = requests.get( f"{config.SERVER_URL}/quote").json()
+    user_id = update.message.from_user.id
+    response = requests.get( f"{config.SERVER_URL}/quote/{user_id}").json()
     quote = response[0]["quote"]
 
     await update.message.reply_text(quote)
