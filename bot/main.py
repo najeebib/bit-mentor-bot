@@ -9,9 +9,6 @@ from bot.handlers.user_handlers import *
 from bot.handlers.quote_handlers import quote_command
 from bot.setting.config import *
 
-
-
-
 # Configure logging
 logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
