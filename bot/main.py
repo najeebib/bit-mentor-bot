@@ -37,7 +37,7 @@ def main():
             logger.info("Registering handlers")
             start_handler = CommandHandler('start', lambda update, context: start(update, context, public_ip))
             connect_handler = CommandHandler('connect', connect)
-            help_handler = CommandHandler('help', help)
+            help_handler = CommandHandler('help', help_command)
 
             conv_handler = ConversationHandler(
                 entry_points=[CommandHandler('question', question_command)],
