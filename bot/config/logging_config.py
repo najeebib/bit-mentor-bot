@@ -1,8 +1,10 @@
 import logging
 import logging.config
-from os import path
+import os
 
-log_file_path = path.join(path.dirname(path.abspath(__file__)), 'app.log')
+log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+os.makedirs(log_dir, exist_ok=True)
+log_file_path = os.path.join(log_dir, 'app.log')
 
 logging_config = {
     'version': 1,
@@ -14,7 +16,7 @@ logging_config = {
     },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',  # Change to INFO to suppress DEBUG messages
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': log_file_path,
             'formatter': 'standard',
@@ -22,10 +24,27 @@ logging_config = {
             'backupCount': 5,
             'encoding': 'utf8'
         },
+        'console': {
+            'level': 'INFO',  # Change to INFO to suppress DEBUG messages
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
     },
-    'root': {
-        'handlers': ['file'],  # Only use the file handler
-        'level': 'DEBUG',
-    },
+    'loggers': {
+        '': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'httpx': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'telegram': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+    }
 }
-
