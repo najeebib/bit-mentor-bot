@@ -11,7 +11,7 @@ from bot.setting.config import *
 
 # Configure logging
 from bot.utils.public_ip import get_public_ip
-from handlerConversation.youtubeConversation import youtube_conversation
+from bot.handlerConversation.youtubeConversation import youtube_conversation
 
 logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
@@ -42,7 +42,6 @@ def main():
                 fallbacks=[CommandHandler('cancel', cancel)],
             )
             # youtube
-            print("aa")
             application.add_handler(youtube_conversation())
             application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
 
