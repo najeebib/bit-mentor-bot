@@ -1,9 +1,12 @@
+import logging
 import logging.config
-import os
+from os import path, makedirs
 
-log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
-os.makedirs(log_dir, exist_ok=True)
-log_file_path = os.path.join(log_dir, 'app.log')
+# Create logs directory if it doesn't exist
+log_dir = path.join(path.dirname(path.abspath(__file__)), '..', 'logs')
+makedirs(log_dir, exist_ok=True)
+
+log_file_path = path.join(log_dir, 'app.log')
 
 logging_config = {
     'version': 1,
@@ -15,7 +18,7 @@ logging_config = {
     },
     'handlers': {
         'file': {
-            'level': 'INFO',  # Change to INFO to suppress DEBUG messages
+            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': log_file_path,
             'formatter': 'standard',
@@ -24,26 +27,17 @@ logging_config = {
             'encoding': 'utf8'
         },
         'console': {
-            'level': 'INFO',  # Change to INFO to suppress DEBUG messages
+            'level': 'ERROR',  # Only print errors to the console
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
         },
     },
-    'loggers': {
-        '': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
-            'propagate': True
-        },
-        'httpx': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': False
-        },
-        'telegram': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': False
-        },
-    }
+    'root': {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG',
+    },
 }
+
+# Configure logging
+logging.config.dictConfig(logging_config)
+logger = logging.getLogger(__name__)
