@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env_*
 .venv
 env/
 venv/
@@ -162,3 +163,25 @@ cython_debug/
 #.idea/
 .idea/
 inspectionProfiles/
+
+.idea/misc.xml
+
+# Environment variables
+
+
+
+# Log files
+bot/config/app.log
+config/app.log
+app.log
+
+# Ignore log files
+*.log
+
+# Ignore virtual environment
+.venv/
+
+.env
+bit-mentor-dev-aws.pem
+.idea/misc.xml
+
