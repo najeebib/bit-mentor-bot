@@ -12,14 +12,16 @@ difficulty_button1 = KeyboardButton("easy")
 difficulty_button2 = KeyboardButton("medium")
 difficulty_button3 = KeyboardButton("hard")
 difficulty_button4 = KeyboardButton("none")
-difficulty_keyboard = ReplyKeyboardMarkup([[difficulty_button1, difficulty_button2,difficulty_button3, difficulty_button4]],
-                               resize_keyboard=True, one_time_keyboard=True)
+difficulty_keyboard = ReplyKeyboardMarkup(
+    [[difficulty_button1, difficulty_button2, difficulty_button3, difficulty_button4]],
+    resize_keyboard=True, one_time_keyboard=True)
 
 answers_button1 = KeyboardButton("1")
 answers_button2 = KeyboardButton("2")
 answers_button3 = KeyboardButton("3")
 answers_button4 = KeyboardButton("4")
-answers_keyboard = ReplyKeyboardMarkup([[answers_button1, answers_button2], [answers_button3, answers_button4]], resize_keyboard=True, one_time_keyboard=True)
+answers_keyboard = ReplyKeyboardMarkup([[answers_button1, answers_button2], [answers_button3, answers_button4]],
+                                       resize_keyboard=True, one_time_keyboard=True)
 
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
@@ -38,9 +40,11 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Then enter the topic"
     )
 
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Operation canceled.")
     return ConversationHandler.END
+
 
 async def connect(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
@@ -52,4 +56,3 @@ async def connect(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     except requests.RequestException as e:
         logger.error(f"Error fetching data: {e}")
         await update.message.reply_text(f"Error fetching data: {e}")
-
