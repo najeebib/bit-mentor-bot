@@ -8,4 +8,7 @@ async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     user_id = update.message.from_user.id
     response = requests.get( f"{config.SERVER_URL}/quote/{user_id}").json()
     quote = response["quote"]
-    await update.message.reply_text(quote)
+    author = response["author"]
+
+    reply = f'"{quote}" - {author}'
+    await update.message.reply_text(reply)
