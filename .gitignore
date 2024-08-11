@@ -185,3 +185,4 @@ app.log
 bit-mentor-dev-aws.pem
 .idea/misc.xml
 
+credentials.json

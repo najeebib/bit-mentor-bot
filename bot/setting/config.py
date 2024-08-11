@@ -7,6 +7,7 @@ class Config:
         self.env = env
         self.SERVER_URL = ""
         self.BOT_TOKEN = ""
+        self.GOOGLE_TIMEZONE = ""
         self.load_environment()
         self.set_parameters()
 
@@ -28,9 +29,11 @@ class Config:
         if self.env == 'prod':
             self.SERVER_URL = os.getenv("SERVER_URL_PROD")
             self.BOT_TOKEN = os.getenv("BOT_TOKEN_PROD")
+            self.GOOGLE_TIMEZONE = os.getenv("GOOGLE_TIMEZONE_PROD")
         else:
             self.SERVER_URL = os.getenv("SERVER_URL_DEV")
             self.BOT_TOKEN = os.getenv("BOT_TOKEN_DEV")
+            self.GOOGLE_TIMEZONE = os.getenv("GOOGLE_TIMEZONE_DEV")
 
         if self.SERVER_URL is None or self.BOT_TOKEN is None:
             raise EnvironmentError(f"Environment variable  not found")
