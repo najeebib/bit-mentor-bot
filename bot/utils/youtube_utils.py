@@ -6,19 +6,18 @@ async def update_watch_history(user_id: int, topic: str, video_length: str, vide
     payload = {
         "user_id": str(user_id),
         "topic": topic,
-        "video_length": video_length,
+        "length": video_length,
         "video_url": video_url
     }
 
-    # Log the payload (optional)
+
     print(payload)
 
-    # (Optional) Add further processing here, like updating the watched status
-    # response = requests.post(
-    #     "http://localhost:8000/youtube/update_user_stats",
-    #     json=payload
-    # )
-    # response.raise_for_status()
+    response = requests.post(
+        "http://localhost:8000/youtube/mark_link_watched",
+        json=payload
+    )
+    response.raise_for_status()
 
 
 async def handle_video_watched(query: Update.callback_query, video_url: str, button_text: str, user_id: int) -> bool:

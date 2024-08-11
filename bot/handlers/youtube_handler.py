@@ -52,7 +52,7 @@ async def get_video_length(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return VIDEO_LENGTH
 
     await fetch_and_display_video_links(update, topic, video_length)
-    return ConversationHandler.END  # End the conversation after processing
+    return ConversationHandler.END
 
 
 async def mark_video_watched_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
