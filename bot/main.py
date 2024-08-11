@@ -13,6 +13,7 @@ from bot.setting.config import *
 # Configure logging
 from bot.utils.public_ip import get_public_ip
 from bot.handlerConversation.youtubeConversation import youtube_conversation
+from bot.handlerConversation.question_conversation import question_conversation
 
 logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
@@ -32,21 +33,13 @@ def main():
             connect_handler = CommandHandler('connect', lambda update, context: connect(update, context))
             help_handler = CommandHandler('help',  lambda update, context: help(update, context))
             quote_handler = CommandHandler('quote',  lambda update, context: quote_command(update, context))
-            conv_handler = ConversationHandler(
-                entry_points=[CommandHandler('question', question_command)],
-                states={
-                    DIFFICULTY: [MessageHandler(filters.TEXT & ~filters.COMMAND, difficulty_response)],
-                    ANSWERS: [MessageHandler(filters.TEXT & ~filters.COMMAND, answers_response)],
-                    TOPIC: [MessageHandler(filters.TEXT & ~filters.COMMAND, topic_response)],
-                    USER_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, user_answer_response)],
-                },
-                fallbacks=[CommandHandler('cancel', cancel)],
-            )
+            
             # youtube
             application.add_handler(youtube_conversation())
             application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
 
-            application.add_handler(conv_handler)
+            application.add_handler(question_conversation())
+            
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
             application.add_handler(help_handler)
