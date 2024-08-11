@@ -7,7 +7,7 @@ from bot.setting.config import *
 from bot.config.logging_config import logger
 
 
-# Load environment variables from .env file silently
+
 
 
 def get_public_ip():
