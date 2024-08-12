@@ -5,6 +5,7 @@ from bot.setting.config import config
 
 
 def check_answer_with_openai(question, user_answer):
+    print("hello")
     data = {
         "question": question,
         "user_answer": user_answer
@@ -16,7 +17,9 @@ def check_answer_with_openai(question, user_answer):
 
 async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> bool:
     user_answer = update.message.text
-    question_text = context.user_data['questions']
+    print(user_answer)
+    question_text = context.user_data['question_text']
+    print(question_text)
     is_correct = check_answer_with_openai(question_text, user_answer)
     correct_answer = context.user_data['correct_answer']
 
@@ -25,7 +28,7 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
     else:
         await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
 
-    explanation = f"Explanation:\n{context.user_data['explanations'][0]}"
+    explanation = f"Explanation:\n{context.user_data['details'][0]}"
     await update.message.reply_text(explanation)
     
     return is_correct
@@ -42,7 +45,7 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
         await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
 
     explanation = "Explanation:\n"
-    for i, exp in enumerate(context.user_data['explanations']):
+    for i, exp in enumerate(context.user_data['details']):
         explanation += f"({i+1}) {exp}.\n"
     await update.message.reply_text(explanation)
     

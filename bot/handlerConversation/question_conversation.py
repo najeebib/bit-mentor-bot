@@ -3,7 +3,7 @@ from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, fi
 from bot.handlers.basic_handlers import cancel
 from bot.handlers.question_handlers import question_command, difficulty_response, answers_response, topic_response
 from bot.handlers.user_handlers import user_answer_response
-DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
+DIFFICULTY, ANSWERS, TOPIC ,USER_ANSWER= range(4)
 
 
 def question_conversation():
@@ -15,6 +15,9 @@ def question_conversation():
                     TOPIC: [CallbackQueryHandler(topic_response)],
                     USER_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, user_answer_response)],
                 },
-                fallbacks=[CommandHandler('cancel', cancel)],
+                # fallbacks=[CommandHandler('cancel', cancel)],
+                fallbacks=[],
+                per_user=True  # Track conversations by user
             )
+   
     return conv_handler

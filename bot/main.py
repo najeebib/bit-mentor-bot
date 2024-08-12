@@ -1,6 +1,6 @@
 import os
 import requests
-from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes,CallbackQueryHandler
+from telegram.ext import ApplicationBuilder,Application, CommandHandler, MessageHandler, ConversationHandler, filters, ContextTypes,CallbackQueryHandler
 import logging.config
 from bot.config.logging_config import logging_config
 from bot.handlers.basic_handlers import *
@@ -23,10 +23,31 @@ logger = logging.getLogger(__name__)
 def main():
     logger.info("Starting bot application")
     public_ip = get_public_ip()
+    BOT_TOKEN = config.BOT_TOKEN
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    # # Define the conversation handler with states
+    # conv_handler = ConversationHandler(
+    #             entry_points=[CommandHandler('question', question_command)],
+    #             states={
+    #                 DIFFICULTY: [MessageHandler(filters.TEXT & ~filters.COMMAND, difficulty_response)],
+    #                 ANSWERS: [MessageHandler(filters.TEXT & ~filters.COMMAND, answers_response)],
+    #                 TOPIC: [CallbackQueryHandler(topic_response)],
+    #                 USER_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, user_answer_response)],
+    #             },
+    #             # fallbacks=[CommandHandler('cancel', cancel)],
+    #             fallbacks=[],
+    #             per_user=True  # Track conversations by user
+    #         )
+
+    # application.add_handler(conv_handler)
+
+    # Start the bot with polling
+    #application.run_polling()
     try:
         BOT_TOKEN = config.BOT_TOKEN
         if BOT_TOKEN:
-            application = Application.builder().token(BOT_TOKEN).build()
+            application = ApplicationBuilder().token(BOT_TOKEN).build()
 
             # basic
             start_handler = CommandHandler('start', lambda update, context: start(update, context, public_ip))
@@ -36,14 +57,14 @@ def main():
             
             # youtube
             application.add_handler(youtube_conversation())
-            application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
-
+        
             application.add_handler(question_conversation())
             
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
             application.add_handler(help_handler)
             application.add_handler(quote_handler)
+            application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
 
             logger.info("Bot handlers added and polling started")
             application.run_polling()
