@@ -33,11 +33,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, public_ip: s
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
-        "To get a question you need to use /question\n"
-        "You will be asked to enter the required information\n"
-        "First you need to enter a difficulty\n"
-        "Then enter the number of answers\n"
-        "Then enter the topic"
+        "/question - Get a random question\n"
+        "/quote - Get a random motivational quote\n"
+        "/task - Set a task in your google calendar\n"
+        "/youtube - Get a youtube video\n"
+        "/cancel - Cancel the current conversation\n"
+        "for some of these command you will be asked to enter some data, follow the instructions in the message"
+
     )
 
 

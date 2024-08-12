@@ -8,34 +8,45 @@ from googleapiclient.discovery import build
 import datetime
 import pytz
 from constants import SCOPES 
-from bot.utils.get_timezone import get_timezone
+from bot.utils.task_utils import get_timezone, is_valid_datetime
 
 TITLE, START, END, LOCATION, CODE = range(5)
 async def task(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("What is the title of your task?")
+    await update.message.reply_text("What is the title of your task? (or /cancel to cancel this conversation)")
     return TITLE
 
 async def title_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['title'] = update.message.text
-    await update.message.reply_text("Enter the start date of your task? (YYYY-MM-DD HH:MM:SS)")
+    await update.message.reply_text("Enter the start date of your task? (YYYY-MM-DD HH:MM:SS) (or /cancel to cancel this conversation)")
     return START
 
 async def start_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data['start'] = update.message.text
-    await update.message.reply_text("Enter the end date of your task? (YYYY-MM-DD HH:MM:SS)")
+    if is_valid_datetime(update.message.text):
+        context.user_data['start'] = update.message.text
+        await update.message.reply_text("Enter the end date of your task? (YYYY-MM-DD HH:MM:SS) (or /cancel to cancel this conversation)")
 
-    return END
+        return END
+    else:
+        await update.message.reply_text("Invalid date format. Please enter a valid date in the format YYYY-MM-DD HH:MM:SS.")
+        return START
 
 async def end_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data['end'] = update.message.text
-    await update.message.reply_text(
-    'Please share your location for timezone information:',
-    reply_markup=ReplyKeyboardMarkup([[KeyboardButton("Share Location", request_location=True)]], one_time_keyboard=True)
-    )
+    if is_valid_datetime(update.message.text):
+        context.user_data['end'] = update.message.text
+        await update.message.reply_text(
+        'Please share your location for timezone information. (or /cancel to cancel this conversation)' ,
+        reply_markup=ReplyKeyboardMarkup([[KeyboardButton("Share Location", request_location=True)]], one_time_keyboard=True)
+        )
 
-    return LOCATION
+        return LOCATION
+    else:
+        await update.message.reply_text("Invalid date format. Please enter a valid date in the format YYYY-MM-DD HH:MM:SS.")
+        return END
 
 async def location_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    if update.message.location is None:
+        await update.message.reply_text("Please share your location for timezone information:")
+        return LOCATION
     user_location = update.message.location
     context.user_data['location'] = (user_location.latitude, user_location.longitude)
     timezone_str = get_timezone(context.user_data['location'])
@@ -67,7 +78,7 @@ async def location_response(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     context.user_data['timezone_str'] = timezone_str
 
     await update.message.reply_text(
-        "Please visit the following URL to authorize this application and provide the code here:\n" + auth_url
+        "Please visit the following URL to authorize this application and provide the authorazation code here:\n" + auth_url
     )
 
     return CODE

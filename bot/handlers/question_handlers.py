@@ -26,7 +26,7 @@ def get_answers_keyboard():
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("Choose difficulty level:", reply_markup=get_difficulty_keyboard())
+    await update.message.reply_text("Choose difficulty level: (or /cancel to cancel this conversation)", reply_markup=get_difficulty_keyboard())
     return DIFFICULTY
 
 async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -36,7 +36,7 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
         return DIFFICULTY
 
     context.user_data['difficulty'] = difficulty
-    await update.message.reply_text("Enter number of answers:", reply_markup=get_answers_keyboard())
+    await update.message.reply_text("Enter number of answers: (or /cancel to cancel this conversation)", reply_markup=get_answers_keyboard())
     return ANSWERS
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -47,7 +47,7 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return ANSWERS
 
     context.user_data['num_of_answers'] = num_of_answers
-    await update.message.reply_text("Enter a topic:")
+    await update.message.reply_text("Enter a topic: (or /cancel to cancel this conversation)")
     return TOPIC
 
 async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
