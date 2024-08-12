@@ -7,6 +7,12 @@ DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 
 def question_conversation():
+    """
+    Handles the conversation flow for the question command.
+
+    Returns:
+        ConversationHandler: A conversation handler object that manages the conversation flow.
+    """
     conv_handler = ConversationHandler(
                 entry_points=[CommandHandler('question', question_command)],
                 states={

@@ -26,10 +26,22 @@ def get_answers_keyboard():
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the question command by sending a message to the user to choose a difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow.
+    """
     await update.message.reply_text("Choose difficulty level: (or /cancel to cancel this conversation)", reply_markup=get_difficulty_keyboard())
     return DIFFICULTY
 
 async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's difficulty response by validating the input and updating the user's data.
+            
+    Returns:
+        int: The next state in the conversation flow.
+    """
     difficulty = update.message.text
     if difficulty not in ["easy", "medium", "hard", "none"]:
         await update.message.reply_text("Invalid difficulty. Please choose from the keyboard options.")
@@ -40,6 +52,12 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
     return ANSWERS
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's number of answers response by validating the input and updating the user's data.
+        
+    Returns:
+        int: The next state in the conversation flow.
+    """
     num_of_answers = update.message.text
 
     if num_of_answers not in ["1", "2", "3", "4"]:
@@ -51,6 +69,12 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     return TOPIC
 
 async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles an open question topic by sending a request to the server to fetch a question based on the topic and difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
     topic = update.message.text
     difficulty = context.user_data['difficulty']
 
@@ -70,6 +94,12 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
     return USER_ANSWER
 
 async def handle_closed_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles a closed question topic by sending a request to the server to fetch a question based on the topic, difficulty level, and number of answers.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
     topic = update.message.text
     difficulty = context.user_data['difficulty']
     num_of_answers = context.user_data['num_of_answers']
@@ -93,6 +123,12 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
     return USER_ANSWER
 
 async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles a topic response by determining whether to handle an open or closed question topic based on the number of answers.
+
+    Returns:
+        int: The next state in the conversation flow.
+    """
     topic = update.message.text
     context.user_data['topic'] = topic
 

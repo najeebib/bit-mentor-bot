@@ -5,6 +5,10 @@ from bot.setting.config import config
 
 
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """
+    Handles the quote command by fetching a random quote from the server and sending it back to the user.
+    
+    """
     user_id = update.message.from_user.id
     response = requests.get(f"{config.SERVER_URL}/quote/{user_id}")
     if response:

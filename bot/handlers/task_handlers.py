@@ -12,15 +12,37 @@ from bot.utils.task_utils import get_timezone, is_valid_datetime
 
 TITLE, START, END, LOCATION, CODE = range(5)
 async def task(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    This function initiates a task conversation by asking the user for the task title.
+    
+    Returns:
+        int: The TITLE constant, indicating the next state in the conversation.
+    """
     await update.message.reply_text("What is the title of your task? (or /cancel to cancel this conversation)")
     return TITLE
 
 async def title_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    This function handles the title response in a task conversation.
+    
+    It saves the title of the task in the user's data and prompts the user to enter the start date of the task.
+    
+    Returns:
+        int: The START constant, indicating the next state in the conversation.
+    """
     context.user_data['title'] = update.message.text
     await update.message.reply_text("Enter the start date of your task? (YYYY-MM-DD HH:MM:SS) (or /cancel to cancel this conversation)")
     return START
 
 async def start_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    This function handles the start date response in a task conversation.
+    
+    It checks if the provided date is valid, and if so, saves it in the user's data and prompts the user to enter the end date of the task.
+    
+    Returns:
+        int: The END constant if the date is valid, indicating the next state in the conversation. Otherwise, the START constant.
+    """
     if is_valid_datetime(update.message.text):
         context.user_data['start'] = update.message.text
         await update.message.reply_text("Enter the end date of your task? (YYYY-MM-DD HH:MM:SS) (or /cancel to cancel this conversation)")
@@ -31,6 +53,14 @@ async def start_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         return START
 
 async def end_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    This function handles the end date response in a task conversation.
+    
+    It checks if the provided date is valid, and if so, saves it in the user's data and prompts the user to share their location for timezone information.
+    
+    Returns:
+        int: The LOCATION constant if the date is valid, indicating the next state in the conversation. Otherwise, the END constant.
+    """
     if is_valid_datetime(update.message.text):
         context.user_data['end'] = update.message.text
         await update.message.reply_text(
@@ -44,6 +74,15 @@ async def end_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return END
 
 async def location_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    This function handles the location response in a task conversation.
+    
+    It checks if the provided location is valid, and if so, saves it in the user's data, 
+    determines the timezone, and prompts the user to authorize the application.
+    
+    Returns:
+        int: The CODE constant, indicating the next state in the conversation.
+    """
     if update.message.location is None:
         await update.message.reply_text("Please share your location for timezone information:")
         return LOCATION
@@ -84,6 +123,15 @@ async def location_response(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     return CODE
 
 async def auth_code_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    This function handles the authorization code response in a task conversation.
+    
+    It fetches the token using the provided authorization code, creates a Google Calendar API service,
+    and inserts a new event into the primary calendar.
+
+    Returns:
+        int: The ConversationHandler.END constant, indicating the end of the conversation.
+    """
     flow = context.user_data['flow']
     dt_start = context.user_data['dt_start']
     dt_end = context.user_data['dt_end']
