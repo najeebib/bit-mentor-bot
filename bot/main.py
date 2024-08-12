@@ -19,6 +19,11 @@ logging.config.dictConfig(logging_config)
 logger = logging.getLogger(__name__)
 
 
+
+
+
+
+
 # Main function
 def main():
     logger.info("Starting bot application")
