@@ -1,5 +1,5 @@
 import requests
-from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 from bot.setting.config import config
 
@@ -25,6 +25,16 @@ def get_answers_keyboard():
 
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
+def get_topics():
+    try:
+        response = requests.get(f"{config.SERVER_URL}/topics")
+        response.raise_for_status()
+        topics = response.json()
+        return topics
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching topics: {e}")  # Debug: Print error message
+        return []
+    
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Choose difficulty level:", reply_markup=get_difficulty_keyboard())
     return DIFFICULTY
@@ -47,8 +57,36 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return ANSWERS
 
     context.user_data['num_of_answers'] = num_of_answers
-    await update.message.reply_text("Enter a topic:")
+
+    topics = get_topics()
+    if not topics:
+        await update.message.reply_text("No topics available. Please try again later.")
+        return
+    keyboard = [
+        [InlineKeyboardButton(topic, callback_data=topic)] for topic in topics
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    print(reply_markup)
+    await update.message.reply_text("Please select a topic:", reply_markup=reply_markup)
     return TOPIC
+
+
+async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print("Entering topic_response...")  # Debugging statement
+    query = update.callback_query  
+    await query.answer()
+    selected_topic_name = query.data
+    if selected_topic_name == 'python':
+        print('success')
+    print("Selected topic:", selected_topic_name)  # Debugging statement
+    context.user_data['topic'] = selected_topic_name
+
+    if context.user_data['num_of_answers'] == "1":
+        return await handle_open_question_topic(update, context)
+    else:
+        return await handle_closed_question_topic(update, context)
+    
 
 async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     topic = update.message.text
@@ -92,11 +130,4 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
     
     return USER_ANSWER
 
-async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    topic = update.message.text
-    context.user_data['topic'] = topic
 
-    if context.user_data['num_of_answers'] == "1":
-        return await handle_open_question_topic(update, context)
-    else:
-        return await handle_closed_question_topic(update, context)
