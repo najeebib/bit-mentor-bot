@@ -64,21 +64,27 @@ async def display_video_links(update, video_links: list):
     await update.message.reply_text(reply_text, reply_markup=reply_markup)
 
 
-async def fetch_and_display_video_links(update: Update, topic: str, video_length: str):
+async def fetch_and_display_video_links(update: Update, topic: str, video_length: str,user_id:str):
     try:
         # Uncomment to make an actual API request
-        # response = requests.get(f"http://localhost:8000/youtube/?topic={topic}&video_length={video_length}")
-        # response.raise_for_status()
-        # video_links = response.json()
+        payload = {
+            "topic": topic,
+            "length": video_length,
+            "user_id": str(user_id)
+        }
+        print(payload)
+        response = requests.post(f"http://localhost:8000/youtube/",json=payload)
+        response.raise_for_status()
+        video_links = response.json()
 
         # Sample video links for testing
-        video_links = [
-            "https://www.youtube.com/watch?v=fake10",
-            "https://www.youtube.com/watch?v=fake7",
-            "https://www.youtube.com/watch?v=fake3",
-            "https://www.youtube.com/watch?v=fake4",
-            "https://www.youtube.com/watch?v=fake5"
-        ]
+        # video_links = [
+        #     "https://www.youtube.com/watch?v=fake10",
+        #     "https://www.youtube.com/watch?v=fake7",
+        #     "https://www.youtube.com/watch?v=fake3",
+        #     "https://www.youtube.com/watch?v=fake4",
+        #     "https://www.youtube.com/watch?v=fake5"
+        # ]
 
         if not video_links:
             await update.message.reply_text("No videos found.")

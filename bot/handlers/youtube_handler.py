@@ -51,7 +51,7 @@ async def get_video_length(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         await update.message.reply_text("Invalid length. Please enter 'short', 'medium', or 'long':")
         return VIDEO_LENGTH
 
-    await fetch_and_display_video_links(update, topic, video_length)
+    await fetch_and_display_video_links(update, topic, video_length,user_id)
     return ConversationHandler.END
 
 
