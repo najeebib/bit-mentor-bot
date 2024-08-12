@@ -26,7 +26,7 @@ DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, public_ip: str) -> None:
     message = f"Hello! This is your bot.\nPublic IP: {public_ip}"
-    app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) triggered start command. Sending start message: {message}")
+    app_logger.info(message)
     await update.message.reply_text(message)
 
 
