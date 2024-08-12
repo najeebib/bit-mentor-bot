@@ -52,9 +52,27 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) triggered cancel command. Operation canceled.")
-    await update.message.reply_text("Operation canceled.")
+    try:
+        user_id = update.effective_user.id
+        username = update.effective_user.username
+        app_logger.info(f"User {username} ({user_id}) triggered cancel command.")
+
+        # Determine what operation was canceled
+        if 'operation' in context.user_data:
+            operation = context.user_data.pop('operation')
+            message = f"The operation '{operation}' has been canceled."
+            app_logger.info(f"User {username} ({user_id}) canceled the operation: {operation}")
+        else:
+            message = "There was no active operation to cancel."
+            app_logger.info(f"User {username} ({user_id}) attempted to cancel, but no operation was active.")
+
+        await update.message.reply_text(message)
+    except Exception as e:
+        app_logger.error(f"Error during cancellation for user {username} ({user_id}): {e}")
+        await update.message.reply_text("An error occurred while attempting to cancel the operation. Please try again later.")
+
     return ConversationHandler.END
+
 
 async def connect(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
