@@ -186,3 +186,5 @@ bit-mentor-dev-aws.pem
 .idea/misc.xml
 
 credentials.json
+.env_dev
+.env_prod
