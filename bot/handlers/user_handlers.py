@@ -14,10 +14,9 @@ def check_answer_with_openai(question, user_answer):
         }
         app_logger.info(f"Sending answer check to OpenAI for question: {question}")
         response = requests.post(f"{config.SERVER_URL}/check_answer", json=data)
-        response.raise_for_status()
         result = response.json()
         app_logger.info(f"Received answer check result: {result}")
-        return result["is_correct"]
+        return result["score"]
     except requests.RequestException as e:
         app_logger.error(f"Request error during answer check: {e}")
         return False
@@ -30,13 +29,13 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
     try:
         user_answer = update.message.text
         question_text = context.user_data['question_text']
-        is_correct = check_answer_with_openai(question_text, user_answer)
+        score = check_answer_with_openai(question_text, user_answer)
         correct_answer = context.user_data['correct_answer']
         app_logger.info(
                 f"User {update.effective_user.username} ({update.effective_user.id}) provided answer: {user_answer} for open question: {question_text}")
 
-        if is_correct:
-            await update.message.reply_text("Correct!\n")
+        if score > 0:
+            await update.message.reply_text(f"Correct! your score is {score}. \n")
             app_logger.info("User provided the correct answer.")
         else:
             await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
@@ -45,7 +44,7 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
         
         await update.message.reply_text(explanation)
         app_logger.info("Sent explanation to user.")
-        return is_correct
+        return score
     except Exception as e:
         app_logger.error(
             f"Error handling open question for user {update.effective_user.username} ({update.effective_user.id}): {e}")
@@ -62,8 +61,10 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
                 f"User {update.effective_user.username} ({update.effective_user.id}) provided answer: {user_answer} for closed question with correct answer: {correct_answer}")
 
         is_correct = int(user_answer) == correct_answer
+        score = 0
         if is_correct:
             await update.message.reply_text("Correct!\n")
+            score=10
             app_logger.info("User provided the correct answer.")
         else:
             await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
@@ -73,7 +74,7 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
             explanation += f"({i+1}) {exp}.\n"
         await update.message.reply_text(explanation)
         app_logger.info("Sent explanation to user.")
-        return is_correct
+        return score
     except Exception as e:
         app_logger.error(
             f"Error handling closed question for user {update.effective_user.username} ({update.effective_user.id}): {e}")
@@ -88,14 +89,14 @@ async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYP
         user_entry = {'user_id': user_id, 'answer': user_answer}
         context.user_data['users'].append(user_entry)
         if context.user_data['num_of_answers'] == "1":
-            is_correct = await handle_open_question(update, context)
+            score = await handle_open_question(update, context)
         else:
-            is_correct = await handle_closed_question(update, context)
+            score = await handle_closed_question(update, context)
         answer_data = {
             'user_id': user_id,
             'topic': context.user_data['topic'],
             'difficulty': context.user_data['difficulty'],
-            'is_correct': is_correct
+            'score': score
         }
         try:
             save_response = requests.post(f"{config.SERVER_URL}/update-user-stat", json=answer_data).json()
