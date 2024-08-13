@@ -26,6 +26,12 @@ def get_answers_keyboard():
 DIFFICULTY, ANSWERS, TOPIC, USER_ANSWER = range(4)
 
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the question command by sending a message to the user to choose a difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) triggered question command")
         await update.message.reply_text("Choose difficulty level:", reply_markup=get_difficulty_keyboard())
@@ -37,6 +43,12 @@ async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return ConversationHandler.END
 
 async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's difficulty response by validating the input and updating the user's data.
+            
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         difficulty = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected difficulty: {difficulty}")
@@ -57,6 +69,12 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
         return DIFFICULTY
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's number of answers response by validating the input and updating the user's data.
+        
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         num_of_answers = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected number of answers: {num_of_answers}")
@@ -78,11 +96,16 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 
 async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles an open question topic by sending a request to the server to fetch a question based on the topic and difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
     try:
         topic = update.message.text
         difficulty = context.user_data['difficulty']
         app_logger.info(f"Handling open question for topic '{topic}' with difficulty '{difficulty}'")
-
         response = requests.post(
             f"{config.SERVER_URL}/questions/",
             json={"difficulty": difficulty, "subject": topic}
@@ -110,6 +133,12 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
 
 
 async def handle_closed_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles a closed question topic by sending a request to the server to fetch a question based on the topic, difficulty level, and number of answers.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
     try:
         topic = update.message.text
         difficulty = context.user_data['difficulty']
@@ -148,6 +177,11 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
 
 
 async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles a topic response by determining whether to handle an open or closed question topic based on the number of answers.
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         topic = update.message.text
         context.user_data['topic'] = topic

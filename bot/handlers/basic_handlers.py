@@ -32,22 +32,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, public_ip: s
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) triggered help command.")
+    await update.message.reply_text(
+        "/question - Get a random question\n"
+        "/quote - Get a random motivational quote\n"
+        "/task - Set a task in your google calendar\n"
+        "/youtube - Get a youtube video\n"
+        "/cancel - Cancel the current conversation\n"
+        "for some of these command you will be asked to enter some data, follow the instructions in the message")
 
-    help_message = (
-        "Here are the commands you can use:\n"
-        "/start - Start the bot and display a welcome message.\n"
-        "/help - Display this help message.\n"
-        "/connect - Connect to the server and retrieve a message.\n"
-        "/question - Start the process of getting a question.\n"
-        "/cancel - Cancel the current operation.\n"
-        "\nTo get a question you need to use /question\n"
-        "You will be asked to enter the required information:\n"
-        "1. First, enter a difficulty level (easy, medium, hard, none).\n"
-        "2. Then, enter the number of answers (1-4).\n"
-        "3. Finally, enter the topic for the question."
-    )
-
-    await update.message.reply_text(help_message)
     app_logger.info("Help message sent successfully")
 
 
