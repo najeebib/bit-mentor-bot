@@ -44,7 +44,7 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
             await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
             app_logger.info("User provided an incorrect answer.")
 
-        explanation = f"Explanation:\n{context.user_data['explanations'][0]}"
+        explanation = f"Explanation:\n{context.user_data['details'][0]}"
         await update.message.reply_text(explanation)
         app_logger.info("Sent explanation to user.")
 
@@ -74,7 +74,7 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
             app_logger.info("User provided an incorrect answer.")
 
         explanation = "Explanation:\n"
-        for i, exp in enumerate(context.user_data['explanations']):
+        for i, exp in enumerate(context.user_data['details']):
             explanation += f"({i + 1}) {exp}.\n"
         await update.message.reply_text(explanation)
         app_logger.info("Sent explanation to user.")

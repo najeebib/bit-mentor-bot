@@ -3,6 +3,15 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot.config.logging_config import app_logger
 
+async def handle_video_watched(query: Update.callback_query, video_url: str, button_text: str, user_id: int) -> bool:
+    if button_text == "Watched":
+        print(f"User {user_id} clicked on 'Watched' for: {video_url}")
+        await query.message.reply_text("You have already watched this video.")
+        return True
+
+    print(f"User {user_id} clicked on: {video_url}")
+    await query.message.reply_text(f"You clicked on the video: {video_url}")
+    return False
 
 async def update_watch_history(user_id: int, topic: str, video_length: str, video_url: str):
     try:
@@ -83,23 +92,30 @@ async def display_video_links(update, video_links: list):
         app_logger.error(f"Error displaying video links: {str(e)}")
         await update.message.reply_text("An error occurred while displaying video links. Please try again later.")
 
-async def fetch_and_display_video_links(update: Update, topic: str, video_length: str):
+async def fetch_and_display_video_links(update: Update,user_id, topic: str, video_length: str):
     try:
         app_logger.info(f"Fetching video links for topic '{topic}' with length '{video_length}'")
-
+        payload={
+                "topic": topic,
+                "length": video_length,
+                "user_id": str(user_id)
+            }
         # Uncomment to make an actual API request
-        # response = requests.get(f"http://localhost:8000/youtube/?topic={topic}&video_length={video_length}")
-        # response.raise_for_status()
-        # video_links = response.json()
+        response = requests.post(
+            "http://localhost:8000/youtube/",
+            json=payload
+        )
+        response.raise_for_status()
+        video_links = response.json()
 
         # Sample video links for testing
-        video_links = [
-            "https://www.youtube.com/watch?v=fake10",
-            "https://www.youtube.com/watch?v=fake7",
-            "https://www.youtube.com/watch?v=fake3",
-            "https://www.youtube.com/watch?v=fake4",
-            "https://www.youtube.com/watch?v=fake5"
-        ]
+        # video_links = [
+        #     "https://www.youtube.com/watch?v=fake10",
+        #     "https://www.youtube.com/watch?v=fake7",
+        #     "https://www.youtube.com/watch?v=fake3",
+        #     "https://www.youtube.com/watch?v=fake4",
+        #     "https://www.youtube.com/watch?v=fake5"
+        # ]
 
         if not video_links:
             await update.message.reply_text("No videos found.")
