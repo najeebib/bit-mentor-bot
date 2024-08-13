@@ -15,9 +15,8 @@ def question_conversation():
                     TOPIC: [CallbackQueryHandler(topic_response)],
                     USER_ANSWER: [MessageHandler(filters.TEXT & ~filters.COMMAND, user_answer_response)],
                 },
-                # fallbacks=[CommandHandler('cancel', cancel)],
-                fallbacks=[],
-                per_user=True  # Track conversations by user
+                fallbacks=[CommandHandler('cancel', cancel)],
+                per_user=True 
             )
    
     return conv_handler
