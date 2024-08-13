@@ -33,12 +33,12 @@ def main():
             application.add_handler(youtube_conversation())
             application.add_handler(question_conversation())
             application.add_handler(task_conversation())
-            application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
             application.add_handler(help_handler)
             application.add_handler(quote_handler)
             
+            application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
 
             app_logger.info("Bot handlers added and polling starting")
             application.run_polling()
