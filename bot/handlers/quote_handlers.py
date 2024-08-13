@@ -6,6 +6,10 @@ from bot.config.logging_config import app_logger
 
 
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """
+    Handles the quote command by fetching a random quote from the server and sending it back to the user.
+    
+    """
     user_id = update.message.from_user.id
     app_logger.info(f"User {update.effective_user.username} ({user_id}) triggered quote command")
 

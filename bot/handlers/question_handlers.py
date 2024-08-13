@@ -36,6 +36,12 @@ def get_topics():
         return []
     
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the question command by sending a message to the user to choose a difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) triggered question command")
         await update.message.reply_text("Choose difficulty level:", reply_markup=get_difficulty_keyboard())
@@ -47,6 +53,12 @@ async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return ConversationHandler.END
 
 async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's difficulty response by validating the input and updating the user's data.
+            
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         difficulty = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected difficulty: {difficulty}")
@@ -69,6 +81,12 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
 async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's number of answers response by validating the input and updating the user's data.
+        
+    Returns:
+        int: The next state in the conversation flow.
+    """
     try:
         num_of_answers = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected number of answers: {num_of_answers}")
@@ -116,6 +134,12 @@ async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles an open question topic by sending a request to the server to fetch a question based on the topic and difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
     try:
         query = update.callback_query
         topic = context.user_data['topic']
@@ -144,9 +168,10 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
         return TOPIC
 
 async def handle_closed_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    query = update.callback_query
-    try: 
+    try:
+        query = update.callback_query 
         topic = context.user_data['topic']
+
         difficulty = context.user_data['difficulty']
         num_of_answers = context.user_data['num_of_answers']
         app_logger.info(
@@ -173,6 +198,7 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
         app_logger.error(f"Error in handle_closed_question_topic for topic '{topic}': {e}")
         await update.message.reply_text("There was an error processing your request. Please try again.")
         return TOPIC
+
 
 
 

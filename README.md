@@ -53,6 +53,12 @@ The bot part this reposotory, but the diagram entails the entire project
 ## Enviroment variables
 There needs to be an enviroment variable for the server link
 - `BOT_TOKEN`: Token for the Telegram bot.
+- `GOOGLE_TIMEZONE_DEV`: API key for the google timezone API.
+
+## OAuth client ID    
+There needs to be a google credentials file in the bot directory, this file is generated in Google cloud console by creating an OAuth client ID and downloading the file and rename it to credentials.json then move it to bot folder (bit-mentor-bot/bot/credentials.json)  
+
+for more information consult this guide from Google: https://developers.google.com/calendar/api/quickstart/python  
 ## How to run
 
 In root directory, open terminal and run these commands  

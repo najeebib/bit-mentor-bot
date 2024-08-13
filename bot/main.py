@@ -7,7 +7,7 @@ from bot.setting.config import *
 from bot.utils.public_ip import get_public_ip
 from bot.handlerConversation.youtubeConversation import youtube_conversation
 from bot.handlerConversation.question_conversation import question_conversation
-
+from bot.handlerConversation.task_conversation import task_conversation
 
 
 def main():
@@ -32,6 +32,7 @@ def main():
             # youtube
             application.add_handler(youtube_conversation())
             application.add_handler(question_conversation())
+            application.add_handler(task_conversation())
             application.add_handler(CallbackQueryHandler(mark_video_watched_callback))
             application.add_handler(start_handler)
             application.add_handler(connect_handler)
