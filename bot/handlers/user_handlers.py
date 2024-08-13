@@ -33,8 +33,7 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
         is_correct = check_answer_with_openai(question_text, user_answer)
         correct_answer = context.user_data['correct_answer']
         app_logger.info(
-                f"User {update.effective_user.username} ({update.effective_user.id}) provided answer: 
-                {user_answer} for open question: {question_text}")
+                f"User {update.effective_user.username} ({update.effective_user.id}) provided answer: {user_answer} for open question: {question_text}")
 
         if is_correct:
             await update.message.reply_text("Correct!\n")
@@ -59,10 +58,8 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
     try:
         user_answer = update.message.text
         correct_answer = context.user_data['correct_answer'] + 1
-        
         app_logger.info(
-                f"User {update.effective_user.username} ({update.effective_user.id}) provided answer: 
-                {user_answer} for closed question with correct answer: {correct_answer}")
+                f"User {update.effective_user.username} ({update.effective_user.id}) provided answer: {user_answer} for closed question with correct answer: {correct_answer}")
 
         is_correct = int(user_answer) == correct_answer
         if is_correct:
@@ -85,7 +82,6 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    try:
         context.user_data['users'] = []
         user_answer = update.message.text
         user_id = update.message.from_user.id
@@ -103,18 +99,13 @@ async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYP
         }
         try:
             save_response = requests.post(f"{config.SERVER_URL}/update-user-stat", json=answer_data).json()
-            save_response.raise_for_status()
             app_logger.info(f"User stats updated successfully for user {user_id}.")
         except requests.RequestException as e:
             app_logger.error(f"Request error when updating user stats for user {user_id}: {e}")
         try:
             response = requests.post(f"{config.SERVER_URL}/insert-question", json=context.user_data)
-            response.raise_for_status()
             app_logger.info(f"Question data inserted successfully for user {user_id}.")
         except requests.RequestException as e:
             app_logger.error(f"Request error when inserting question data for user {user_id}: {e}")
         return ConversationHandler.END
-    except Exception as e:
-        app_logger.error(f"Error in user_answer_response for user {user_id}: {e}")
-        await update.message.reply_text("There was an error processing your response. Please try again later.")
-        return ConversationHandler.END
+  

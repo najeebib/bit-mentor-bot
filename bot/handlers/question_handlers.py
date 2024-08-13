@@ -162,10 +162,7 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
         app_logger.error(f"Request error in handle_open_question_topic for topic '{topic}': {e}")
         await update.message.reply_text("There was an error connecting to the server. Please try again.")
         return TOPIC
-    except Exception as e:
-        app_logger.error(f"Error in handle_open_question_topic for topic '{topic}': {e}")
-        await update.message.reply_text("There was an error processing your request. Please try again.")
-        return TOPIC
+   
 
 async def handle_closed_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
@@ -190,13 +187,10 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
             reply += f"({i+1}) {answer}.\n"
         await query.message.reply_text(reply)
         app_logger.info("Sent closed question to user")
+        return USER_ANSWER
     except requests.RequestException as e:
         app_logger.error(f"Request error in handle_closed_question_topic for topic '{topic}': {e}")
         await update.message.reply_text("There was an error connecting to the server. Please try again.")
-        return TOPIC
-    except Exception as e:
-        app_logger.error(f"Error in handle_closed_question_topic for topic '{topic}': {e}")
-        await update.message.reply_text("There was an error processing your request. Please try again.")
         return TOPIC
 
 
