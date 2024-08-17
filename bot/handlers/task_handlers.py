@@ -1,14 +1,14 @@
 import os
-from dotenv import load_dotenv
+import json
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler, ContextTypes
-import os.path
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 import datetime
 import pytz
 from constants import SCOPES 
 from bot.utils.task_utils import get_timezone, is_valid_datetime
+from bot.setting.config import config
 
 TITLE, START, END, LOCATION, CODE = range(5)
 async def task(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -99,10 +99,12 @@ async def location_response(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     dt_start = timezone.localize(dt_start)
     dt_end = timezone.localize(dt_end)
 
+    credentials_json = os.getenv("GOOGLE_CREDENTIALS_DEV")
 
+    credentials_dict = json.loads(credentials_json)
     
-    flow = InstalledAppFlow.from_client_secrets_file(
-        'bot/credentials.json', SCOPES
+    flow = InstalledAppFlow.from_client_config(
+        credentials_dict, SCOPES
     )
     flow.redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
     auth_url, _ = flow.authorization_url(
