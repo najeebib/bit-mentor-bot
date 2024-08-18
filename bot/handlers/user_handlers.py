@@ -70,8 +70,7 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
             await update.message.reply_text(f"Wrong! The correct answer is {correct_answer}.\n")
             app_logger.info("User provided an incorrect answer.")
         explanation = "Explanation:\n"
-        for i, exp in enumerate(context.user_data['details']):
-            explanation += f"({i+1}) {exp}.\n"
+        explanation += f"({correct_answer}) {context.user_data['details'][correct_answer-1]}.\n"
         await update.message.reply_text(explanation)
         app_logger.info("Sent explanation to user.")
         return score
@@ -94,7 +93,7 @@ async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYP
             score = await handle_closed_question(update, context)
         answer_data = {
             'user_id': user_id,
-            'topic': context.user_data['topic'],
+            'subject': context.user_data['topic'],
             'difficulty': context.user_data['difficulty'],
             'score': score
         }
