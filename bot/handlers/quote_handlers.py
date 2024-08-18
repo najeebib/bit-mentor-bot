@@ -17,10 +17,10 @@ async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         response = requests.get(f"{config.SERVER_URL}/quote/{user_id}")
         response.raise_for_status()  # This will raise an HTTPError for bad responses
         data = response.json()
-
+        # Extract the quote and author from the response
         quote = data.get("quote")
         author = data.get("author")
-
+        # Send the quote back to the user
         if quote and author:
             reply = f'"{quote}" - {author}'
             app_logger.info(f"Quote retrieved successfully for user {user_id}: {quote} - {author}")
