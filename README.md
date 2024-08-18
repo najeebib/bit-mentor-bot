@@ -61,9 +61,10 @@ There is a shell script in the root directory that will push the bot to Docker h
 In order for it to work you need an .env_dev, dockerfile, .dockerignore and the script file in the root directory  
 Then run the script with this command
 ```
-./docker username
+./docker username enviroment
 ```
 replace username with your actuall docker hub username (make sure you're logged in to docker in your machine)  
+replace enviroment with the enviroment you want (dev or prod)
 
 ## How to run
 

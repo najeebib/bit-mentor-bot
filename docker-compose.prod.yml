@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  bit-mentor-bot:
+    image: bit-mentor-bot:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bit-mentor-bot-container
+    env_file:
+      - .env_prod
+    volumes:
+      - ./.env_prod:/app/.env_prod
+    command: python -m bot.main --env prod
+    restart: unless-stopped

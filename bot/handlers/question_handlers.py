@@ -26,13 +26,19 @@ def get_answers_keyboard():
 DIFFICULTY, ANSWERS, TOPIC ,USER_ANSWER= range(4)
 
 def get_topics():
+    """
+    Fetches a list of topics from the server.
+
+    Returns:
+        list: A list of topics in JSON format.
+    """
     try:
         response = requests.get(f"{config.SERVER_URL}/topics")
         response.raise_for_status()
         topics = response.json()
         return topics
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching topics: {e}")  # Debug: Print error message
+        print(f"Error fetching topics: {e}")
         return []
     
 async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -62,12 +68,12 @@ async def difficulty_response(update: Update, context: ContextTypes.DEFAULT_TYPE
     try:
         difficulty = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected difficulty: {difficulty}")
-
+        # Check if the difficulty is valid
         if difficulty not in ["easy", "medium", "hard", "none"]:
             app_logger.warning(f"User {update.effective_user.username} selected an invalid difficulty: {difficulty}")
             await update.message.reply_text("Invalid difficulty. Please choose from the keyboard options.")
             return DIFFICULTY
-
+        # save difficulty to user data
         context.user_data['difficulty'] = difficulty
         app_logger.info(f"Saved difficulty '{difficulty}' to user data")
         await update.message.reply_text("Enter number of answers:", reply_markup=get_answers_keyboard())
@@ -90,10 +96,12 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     try:
         num_of_answers = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected number of answers: {num_of_answers}")
+        # Check if the number of answers is valid
         if num_of_answers not in ["1", "2", "3", "4"]:
             app_logger.warning(f"User {update.effective_user.username} selected an invalid number of answers: {num_of_answers}")
             await update.message.reply_text("Invalid number of answers. Please choose from the keyboard options.")
             return ANSWERS
+        # save num_of_answers to user data
         context.user_data['num_of_answers'] = num_of_answers
         app_logger.info(f"Saved number of answers '{num_of_answers}' to user data")
         topics = get_topics()
@@ -114,10 +122,17 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 
 async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles the user's topic response by validating the input and updating the user's data.
+    
+    Returns:
+        int: The next state in the conversation flow, which is TOPIC
+    """
     try:
         query = update.callback_query  
         await query.answer()
         selected_topic_name = query.data
+        # save topic to user data
         context.user_data['topic'] = selected_topic_name
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) entered topic: {selected_topic_name}")
         await query.edit_message_text(f"You selected: {selected_topic_name}")
@@ -150,6 +165,7 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
             json={"difficulty": difficulty, "subject": topic}
         ).json()
         app_logger.info(f"Received response for open question: {response}")
+        # save question data to user data
         context.user_data['question_text'] = response["question_text"]
         context.user_data['options'] = response["options"]
         context.user_data['correct_answer'] = response["answer"]
@@ -165,6 +181,13 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
    
 
 async def handle_closed_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles a closed question topic by sending a request to the server to fetch a question based on the topic and difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
+
     try:
         query = update.callback_query 
         topic = context.user_data['topic']
@@ -178,6 +201,7 @@ async def handle_closed_question_topic(update: Update, context: ContextTypes.DEF
             json={"difficulty": difficulty, "subject": topic, "answers_count": num_of_answers}
         ).json()
         app_logger.info(f"Received response for closed question: {response}")
+        # save question data to user data
         context.user_data['question_text'] = response["question_text"]
         context.user_data['options'] = response["options"]
         context.user_data['correct_answer'] = response["correct_answer"]

@@ -1,16 +1,18 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-    echo "Usage: $0 <docker_hub_username>"
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: $0 <docker_hub_username> <env>"
+    echo "env: 'dev' or 'prod'"
     exit 1
 fi
 
 DOCKER_HUB_USERNAME="$1"
+ENVIRONMENT="$2"
 
-IMAGE_NAME="telegram-bot"
+IMAGE_NAME="bit-mentor-bot"
 TAG="latest"
 VERSION_TAG="v1.0.0"
-CONTAINER_NAME="telegram-bot-container"
+CONTAINER_NAME="bit-mentor-bot-container"
 
 ENV_FILE_PATH="$(cd "$(dirname "$0")" && pwd)/.env_dev"
 
@@ -39,9 +41,17 @@ if [ $? -eq 0 ]; then
     if [ $? -eq 0 ]; then
         echo "Docker image pushed to Docker Hub successfully."
 
-        echo "Running Docker container with Docker Compose..."
-        docker-compose up -d
+        if [ "$ENVIRONMENT" == "dev" ]; then
+            COMPOSE_FILE="docker-compose.dev.yml"
+        elif [ "$ENVIRONMENT" == "prod" ]; then
+            COMPOSE_FILE="docker-compose.prod.yml"
+        else
+            echo "Invalid environment specified. Use 'dev' or 'prod'."
+            exit 1
+        fi
 
+        echo "Running Docker container with Docker Compose ($COMPOSE_FILE)..."
+        docker-compose -f $COMPOSE_FILE up -d
         if [ $? -eq 0 ]; then
             echo "Docker container is running."
         else
