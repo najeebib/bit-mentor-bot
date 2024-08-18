@@ -10,5 +10,5 @@ services:
       - .env_dev
     volumes:
       - ./.env_dev:/app/.env_dev
-    command: python -m bot.main
+    command: python -m bot.main --env dev
     restart: unless-stopped

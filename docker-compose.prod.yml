@@ -10,5 +10,5 @@ services:
       - .env_prod
     volumes:
       - ./.env_prod:/app/.env_prod
-    command: python -m bot.main
+    command: python -m bot.main --env prod
     restart: unless-stopped
