@@ -9,6 +9,12 @@ services:
     env_file:
       - .env_prod
     volumes:
-      - ./.env_prod:/app/.env_prod
+      - ./.env_dev:/app/.env_prod
     command: python -m bot.main --env prod
     restart: unless-stopped
+    networks:
+      - bit-mentor
+
+networks:
+  bit-mentor:
+    external: true
