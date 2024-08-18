@@ -1,11 +1,11 @@
 version: '3.8'
 services:
-  telegram-bot:
-    image: telegram-bot:latest
+  bit-mentor-bot:
+    image: bit-mentor-bot:latest
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: telegram-bot-container
+    container_name: bit-mentor-bot-container
     env_file:
       - .env_prod
     volumes:
