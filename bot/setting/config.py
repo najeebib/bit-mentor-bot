@@ -46,6 +46,18 @@ class Config:
             raise FileNotFoundError(f"Environment file '{filepath}' not found.")
 
     def set_parameters(self):
+        """
+        Sets the server URL, bot token, and Google timezone based on the current environment.
+        
+        If the environment is 'prod', it sets the parameters from the 'SERVER_URL_PROD', 'BOT_TOKEN_PROD', and 'GOOGLE_TIMEZONE_PROD' environment variables.
+        If the environment is 'dev', it sets the parameters from the 'SERVER_URL_DEV', 'BOT_TOKEN_DEV', and 'GOOGLE_TIMEZONE_DEV' environment variables.
+        
+        Raises:
+            EnvironmentError: If the 'SERVER_URL' or 'BOT_TOKEN' environment variable is not found.
+        
+        Returns:
+            None
+        """
         if self.env == 'prod':
             self.SERVER_URL = os.getenv("SERVER_URL_PROD")
             self.BOT_TOKEN = os.getenv("BOT_TOKEN_PROD")
