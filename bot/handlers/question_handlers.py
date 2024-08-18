@@ -165,8 +165,8 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
         context.user_data['question_text'] = response["question_text"]
         context.user_data['options'] = response["options"]
         context.user_data['correct_answer'] = response["answer"]
-        context.user_data['details'] = [response["options"]]
-        reply = f'Question: {response["question_text"]}\n'
+        context.user_data['details'] = response["details"]
+        reply = f'Question: \n{response["question_text"]}\n'
         await query.message.reply_text(reply)
         app_logger.info("Sent open question to user")
         return USER_ANSWER
