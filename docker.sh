@@ -35,13 +35,12 @@ if [ $? -eq 0 ]; then
 
     echo "Pushing Docker image to Docker Hub..."
     docker push $DOCKER_HUB_USERNAME/$IMAGE_NAME:$VERSION_TAG
+
     if [ $? -eq 0 ]; then
-         echo "Docker image pushed to Docker Hub successfully."
-        echo "Running Docker container..."
-        docker run -d --name $CONTAINER_NAME \
-            --env-file "$ENV_FILE_PATH" \
-            -v "$ENV_FILE_PATH":/app/.env_dev \
-            $IMAGE_NAME:$TAG
+        echo "Docker image pushed to Docker Hub successfully."
+
+        echo "Running Docker container with Docker Compose..."
+        docker-compose up -d
 
         if [ $? -eq 0 ]; then
             echo "Docker container is running."

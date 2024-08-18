@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  telegram-bot:
+    image: telegram-bot:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: telegram-bot-container
+    env_file:
+      - .env_dev
+    volumes:
+      - ./.env_dev:/app/.env_dev
+    command: python -m bot.main
+    restart: unless-stopped
