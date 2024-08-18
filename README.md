@@ -58,7 +58,7 @@ There needs to be an enviroment variable for the server link
 
 ## Docker  
 There is a shell script in the root directory that will push the bot to Docker hub   
-In order for it to work you need an .env_dev file in the root directory  
+In order for it to work you need an .env_dev, dockerfile, .dockerignore and the script file in the root directory  
 Then run the script with this command
 ```
 ./docker username
