@@ -1,9 +1,15 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+    echo "Usage: $0 <docker_hub_username>"
+    exit 1
+fi
+
+DOCKER_HUB_USERNAME="$1"
+
 IMAGE_NAME="telegram-bot"
 TAG="latest"
 VERSION_TAG="v1.0.0"
-DOCKER_HUB_USERNAME="najeebib" 
 CONTAINER_NAME="telegram-bot-container"
 
 ENV_FILE_PATH="$(cd "$(dirname "$0")" && pwd)/.env_dev"
