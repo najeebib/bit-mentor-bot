@@ -4,6 +4,18 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from bot.config.logging_config import app_logger
 
 async def handle_video_watched(query: Update.callback_query, video_url: str, button_text: str, user_id: int) -> bool:
+    """
+    Handles the video watch status update by the user in a conversation.
+
+    Args:
+        query (Update.callback_query): The callback query object containing the user's interaction.
+        video_url (str): The URL of the video being watched.
+        button_text (str): The text on the button that was clicked.
+        user_id (int): The ID of the user who interacted with the video.
+
+    Returns:
+        bool: True if the user has already watched the video, False otherwise.
+    """
     if button_text == "Watched":
         print(f"User {user_id} clicked on 'Watched' for: {video_url}")
         await query.message.reply_text("You have already watched this video.")
@@ -14,6 +26,18 @@ async def handle_video_watched(query: Update.callback_query, video_url: str, but
     return False
 
 async def update_watch_history(user_id: int, topic: str, video_length: str, video_url: str):
+    """
+    Asynchronously updates the watch history for a given user.
+
+    Args:
+        user_id (int): The ID of the user whose watch history is being updated.
+        topic (str): The topic associated with the video being watched.
+        video_length (str): The length of the video being watched.
+        video_url (str): The URL of the video being watched.
+
+    Returns:
+        None
+    """
     try:
         payload = {
             "user_id": str(user_id),
@@ -37,6 +61,19 @@ async def update_watch_history(user_id: int, topic: str, video_length: str, vide
 
 
 def create_new_keyboard(keyboard: list, video_index: int) -> list:
+    """
+    Creates a new keyboard with a "Watched" button at the specified index.
+
+    Args:
+        keyboard (list): The original keyboard.
+        video_index (int): The index at which the "Watched" button should be added.
+
+    Returns:
+        list: The new keyboard with the "Watched" button.
+
+    Raises:
+        Exception: If an error occurs while creating the new keyboard.
+    """
     try:
         new_keyboard = []
         for i in range(len(keyboard)):
@@ -51,6 +88,18 @@ def create_new_keyboard(keyboard: list, video_index: int) -> list:
         return keyboard  # Return the original keyboard if something goes wrong
 
 def extract_video_links(original_text: str) -> list:
+    """
+    Extracts YouTube video links from a given text.
+
+    Args:
+        original_text (str): The text containing the video links.
+
+    Returns:
+        list: A list of extracted video links.
+
+    Raises:
+        Exception: If an error occurs during the extraction process.
+    """
     try:
         video_links = original_text.split("\n")[2:]
         app_logger.info(f"Extracted video links: {video_links}")
@@ -60,6 +109,15 @@ def extract_video_links(original_text: str) -> list:
         return []
 
 def get_video_index(callback_data: str) -> int:
+    """
+    Extracts the video index from the provided callback data.
+
+    Args:
+        callback_data (str): The callback data containing the video index.
+
+    Returns:
+        int: The extracted video index. Returns -1 if an error occurs.
+    """
     try:
         index = int(callback_data.split("_")[1]) - 1
         app_logger.info(f"Extracted video index: {index}")
@@ -69,6 +127,15 @@ def get_video_index(callback_data: str) -> int:
         return -1  # Return an invalid index if something goes wrong
 
 def is_valid_video_length(video_length: str) -> bool:
+    """
+    Checks if a given video length is valid.
+
+    Args:
+        video_length (str): The length of the video to check.
+
+    Returns:
+        bool: True if the video length is valid, False otherwise.
+    """
     valid_lengths = ["short", "medium", "long"]
     if video_length in valid_lengths:
         app_logger.info(f"Video length '{video_length}' is valid")
@@ -78,6 +145,13 @@ def is_valid_video_length(video_length: str) -> bool:
         return False
 
 async def display_video_links(update, video_links: list):
+    """
+    Displays a list of YouTube video links to the user.
+
+    Args:
+        update: The incoming update object.
+        video_links (list): A list of YouTube video links to display.
+    """
     try:
         keyboard = [
             [InlineKeyboardButton(f"Watch video {i + 1}", callback_data=f"watch_{i + 1}")]
@@ -93,6 +167,16 @@ async def display_video_links(update, video_links: list):
         await update.message.reply_text("An error occurred while displaying video links. Please try again later.")
 
 async def fetch_and_display_video_links(update: Update,user_id, topic: str, video_length: str):
+    """
+    Fetches YouTube video links based on the provided topic and video length, 
+    and displays them to the user.
+
+    Args:
+        update (Update): The incoming update object.
+        user_id: The ID of the user requesting the video links.
+        topic (str): The topic for which to fetch video links.
+        video_length (str): The length of the videos to fetch.
+    """
     try:
         app_logger.info(f"Fetching video links for topic '{topic}' with length '{video_length}'")
         payload={

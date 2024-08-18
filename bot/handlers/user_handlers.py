@@ -7,6 +7,16 @@ from bot.setting.config import config
 
 
 def check_answer_with_openai(question, user_answer):
+    """
+    Checks if a user's answer is correct by sending a request to OpenAI.
+
+    Args:
+        question (str): The question being asked.
+        user_answer (str): The user's answer to the question.
+
+    Returns:
+        bool: True if the answer is correct, False otherwise.
+    """
     try:
         data = {
             "question": question,
@@ -27,6 +37,12 @@ def check_answer_with_openai(question, user_answer):
 
 
 async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> bool:
+    """
+    Handles an open question by checking the user's answer against the correct answer using OpenAI.
+
+    Returns:
+        bool: True if the user's answer is correct, False otherwise.
+    """
     try:
         user_answer = update.message.text
         question_text = context.user_data['question_text']
@@ -55,6 +71,12 @@ async def handle_open_question(update: Update, context: ContextTypes.DEFAULT_TYP
 
 
 async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_TYPE) -> bool:
+    """
+    Handles a closed question by checking the user's answer against the correct answer.
+
+    Returns:
+        bool: True if the user's answer is correct, False otherwise.
+    """
     try:
         user_answer = update.message.text
         correct_answer = context.user_data['correct_answer'] + 1
@@ -82,6 +104,17 @@ async def handle_closed_question(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def user_answer_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """
+        Handles the user's answer response by storing the user's answer, 
+        determining whether the answer is correct, and updating the user's stats.
+
+        Args:
+            update (Update): The update object containing the user's message.
+            context (ContextTypes.DEFAULT_TYPE): The context object containing the conversation state.
+
+        Returns:
+            int: The next state in the conversation flow.
+        """
         context.user_data['users'] = []
         user_answer = update.message.text
         user_id = update.message.from_user.id

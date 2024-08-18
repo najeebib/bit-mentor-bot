@@ -2,6 +2,7 @@ from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, fi
 
 from bot.handlers.basic_handlers import cancel
 from bot.handlers.task_handlers import task, title_response, start_response, end_response, location_response, auth_code_response
+from bot.config.logging_config import app_logger
 
 TITLE, START, END, LOCATION, CODE = range(5)
 
@@ -26,5 +27,5 @@ def task_conversation():
         },
         fallbacks=[CommandHandler('cancel', cancel)],
     )
-
+    app_logger.info("Task conversation handler created")
     return task_conv

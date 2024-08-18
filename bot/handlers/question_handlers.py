@@ -26,6 +26,12 @@ def get_answers_keyboard():
 DIFFICULTY, ANSWERS, TOPIC ,USER_ANSWER= range(4)
 
 def get_topics():
+    """
+    Fetches a list of topics from the server.
+
+    Returns:
+        list: A list of topics in JSON format.
+    """
     try:
         response = requests.get(f"{config.SERVER_URL}/topics")
         response.raise_for_status()
@@ -114,6 +120,12 @@ async def answers_response(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 
 async def topic_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles the user's topic response by validating the input and updating the user's data.
+    
+    Returns:
+        int: The next state in the conversation flow, which is TOPIC
+    """
     try:
         query = update.callback_query  
         await query.answer()
@@ -165,6 +177,13 @@ async def handle_open_question_topic(update: Update, context: ContextTypes.DEFAU
    
 
 async def handle_closed_question_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles a closed question topic by sending a request to the server to fetch a question based on the topic and difficulty level.
+        
+    Returns:
+        int: The next state in the conversation flow, which is USER_ANSWER.
+    """
+
     try:
         query = update.callback_query 
         topic = context.user_data['topic']

@@ -4,6 +4,12 @@ import os
 from dotenv import load_dotenv
 class Config:
     def __init__(self, env: str):
+        """
+        Initializes a new instance of the Config class.
+
+        Args:
+            env (str): The environment to configure for. Can be either 'prod' or 'dev'.
+        """
         self.env = env
         self.SERVER_URL = ""
         self.BOT_TOKEN = ""
@@ -12,6 +18,20 @@ class Config:
         self.set_parameters()
 
     def load_environment(self):
+        """
+        Load the environment variables based on the current environment.
+
+        This function checks the current environment and loads the corresponding environment file.
+        It first constructs the file path based on the environment. If the file exists, it loads the
+        environment variables using the `load_dotenv` function. If the environment is 'prod', it
+        loads the variables from '.env_prod' and prints a message. Otherwise, it loads the
+        variables from '.env_dev' and prints a message.
+
+        If the environment file is not found, a `FileNotFoundError` is raised.
+
+        Raises:
+            FileNotFoundError: If the environment file is not found.
+        """
         filepath = '.env_prod' if self.env == 'prod' else '.env_dev'
         print(filepath)
         if os.path.exists(filepath):

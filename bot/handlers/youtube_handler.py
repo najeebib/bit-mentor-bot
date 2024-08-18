@@ -10,6 +10,16 @@ YOUTUBE_TOPIC, VIDEO_LENGTH = range(2)
 
 
 async def start_youtube(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Starts the YouTube video selection process.
+
+    Returns:
+        int: The next state of the conversation.
+
+    Raises:
+        Exception: If an error occurs during the YouTube video selection process.
+
+    """
     try:
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) started YouTube video selection.")
         await send_category_selection(update)
@@ -21,6 +31,9 @@ async def start_youtube(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 
 async def send_category_selection(update: Update):
+    """
+    Sends a message to the user with a list of categories to select from.
+    """
     try:
         categories_text = "\n".join(CATEGORIES)
         message_text = f"Please select a topic from the following categories:\n{categories_text}"
@@ -38,6 +51,12 @@ async def send_category_selection(update: Update):
 
 
 async def get_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Handles the user's topic selection by validating the input and updating the user's data.
+
+    Returns:
+        int: The next state in the conversation flow, which can be either YOUTUBE_TOPIC or VIDEO_LENGTH.
+    """
     try:
         selected_topic = update.message.text
         app_logger.info(f"User {update.effective_user.username} ({update.effective_user.id}) selected topic: {selected_topic}")
@@ -57,6 +76,12 @@ async def get_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def send_invalid_topic_message(update: Update):
+    """
+    Sends an invalid topic message to the user.
+
+    Raises:
+        Exception: If an error occurs while sending the invalid topic message.
+    """
     try:
         await update.message.reply_text(
             f"'{update.message.text}' is not a valid topic. Please select a topic from the following categories:\n" + "\n".join(CATEGORIES)
@@ -69,6 +94,17 @@ async def send_invalid_topic_message(update: Update):
 
 
 async def get_video_length(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Asynchronously handles the video length selection by the user in a conversation.
+
+    Returns:
+        int: The next state of the conversation. Which is VIDEO_LENGTH
+
+    Raises:
+        Exception: If there is an error processing the video length.
+
+    This function retrieves the video length selected by the user from the message text. It then stores the video length in the user data of the conversation context. The function logs the selected video length and the topic associated with the user. If the video length is invalid, it sends an error message to the user and returns the VIDEO_LENGTH state. If the video length is valid, it calls the fetch_and_display_video_links function to fetch and display video links based on the topic and video length, and returns the ConversationHandler.END state. If there is an error processing the video length, it logs the error and sends an error message to the user.
+    """
     try:
         video_length = update.message.text
         context.user_data['video_length'] = video_length
@@ -91,6 +127,14 @@ async def get_video_length(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 
 async def mark_video_watched_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Asynchronously handles the video watch status update by the user in a conversation.
+
+    Raises:
+        Exception: If there is an error updating the video watch status.
+
+    This function retrieves the video index and video URL from the query data and updates the video watch status in the user data. It logs the updated video watch status and the topic associated with the user. If there is an error updating the video watch status, it logs the error and sends an error message to the user.
+    """
     try:
         query = update.callback_query
         await query.answer()

@@ -11,6 +11,13 @@ from bot.handlerConversation.task_conversation import task_conversation
 
 
 def main():
+    """
+    The main function that initializes and runs the bot application.
+
+    It sets up the bot's configuration, including the bot token and public IP,
+    and adds various command and conversation handlers to the application.
+    The function also handles exceptions that may occur during the bot's execution.
+    """
     app_logger.info("Starting bot application")
     public_ip = get_public_ip()
     BOT_TOKEN = config.BOT_TOKEN
