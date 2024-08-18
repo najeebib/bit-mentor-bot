@@ -54,11 +54,17 @@ The bot part this reposotory, but the diagram entails the entire project
 There needs to be an enviroment variable for the server link
 - `BOT_TOKEN`: Token for the Telegram bot.
 - `GOOGLE_TIMEZONE_DEV`: API key for the google timezone API.
+- `GOOGLE_CREDENTIALS_DEV`: QAuth client ID, Generated from Google clound console and past it to env file
 
-## OAuth client ID    
-There needs to be a google credentials file in the bot directory, this file is generated in Google cloud console by creating an OAuth client ID and downloading the file and rename it to credentials.json then move it to bot folder (bit-mentor-bot/bot/credentials.json)  
+## Docker  
+There is a shell script in the root directory that will push the bot to Docker hub   
+In order for it to work you need an .env_dev, dockerfile, .dockerignore and the script file in the root directory  
+Then run the script with this command
+```
+./docker username
+```
+replace username with your actuall docker hub username (make sure you're logged in to docker in your machine)  
 
-for more information consult this guide from Google: https://developers.google.com/calendar/api/quickstart/python  
 ## How to run
 
 In root directory, open terminal and run these commands  
