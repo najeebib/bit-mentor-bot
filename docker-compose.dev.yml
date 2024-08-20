@@ -12,3 +12,9 @@ services:
       - ./.env_dev:/app/.env_dev
     command: python -m bot.main --env dev
     restart: unless-stopped
+    networks:
+      - bit-mentor
+
+networks:
+  bit-mentor:
+    external: true
