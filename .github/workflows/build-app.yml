@@ -59,7 +59,7 @@ jobs:
 
     - name: SCP .env_dev to EC2
       run: |
-        scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} .env_dev ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/app/.env_dev
+        scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} .env_dev ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/bit-mentor-bot/.env_dev
 
     - name: Deploy to EC2
       run: |
@@ -68,22 +68,21 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y python3-pip python3-venv
 
-        if [ -d "/home/ubuntu/app" ]; then
+        if [ -d "/home/ubuntu/bit-mentor-bot" ]; then
           echo "App directory exists. Pulling latest changes."
-          cd /home/ubuntu/app
+          cd /home/ubuntu/bit-mentor-otb
           git pull origin dev
           source venv/bin/activate
           pip install -r requirements.txt
         else
           echo "App directory does not exist. Cloning repository and setting up environment."
-          git clone https://github.com/najeebib/CICD-POC.git /home/ubuntu/app
-          cd /home/ubuntu/app
+          git clone https://github.com/najeebib/CICD-POC.git
+          cd /home/ubuntu/bit-mentor-bot
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
         fi
         echo "Deploying the bot"
-        cp /home/ubuntu/app/.env_dev /home/ubuntu/app/.env
         pkill -f "python -m bot.main" || true
         nohup python -m bot.main > /dev/null 2>&1 &
         EOF
