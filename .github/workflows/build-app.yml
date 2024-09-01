@@ -62,7 +62,7 @@ jobs:
           git pull origin dev
         else
           echo "App directory does not exist. Cloning repository and setting up environment."
-          git clone https://github.com/najeebib/CICD-POC.git /home/ubuntu/bit-mentor-bot
+          git clone https://github.com/najeebib/bit-mentor-bot.git
         fi
   
         cd /home/ubuntu/bit-mentor-bot
