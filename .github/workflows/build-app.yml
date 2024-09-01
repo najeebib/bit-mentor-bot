@@ -87,6 +87,6 @@ jobs:
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
         echo "Deploying the bot"
         source venv/bin/activate
-        pkill -f "python -m bot.main" || true
+        pkill -f "python3 -m bot.main" || true
         nohup python -m bot.main > /dev/null 2>&1 &
         EOF
