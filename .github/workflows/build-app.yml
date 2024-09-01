@@ -58,7 +58,6 @@ jobs:
 
     - name: SCP .env_dev to EC2
       run: |
-        echo secrets.EC2_SSH_KEY
         scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} .env_dev ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/bit-mentor-bot/.env_dev
 
     - name: Deploy to EC2
