@@ -86,6 +86,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
         echo "Deploying the bot"
+        cd /home/ubuntu/bit-mentor-bot
         source venv/bin/activate
         pkill -f "python3 -m bot.main" || true
         nohup python3 -m bot.main > /dev/null 2>&1 &
