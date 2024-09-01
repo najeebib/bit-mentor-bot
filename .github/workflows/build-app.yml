@@ -88,5 +88,5 @@ jobs:
         echo "Deploying the bot"
         source venv/bin/activate
         pkill -f "python3 -m bot.main" || true
-        nohup python -m bot.main > /dev/null 2>&1 &
+        nohup python3 -m bot.main > /dev/null 2>&1 &
         EOF
