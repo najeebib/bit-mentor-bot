@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
+        pip install flake8 pytest pytest-xml
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Lint with flake8
@@ -32,12 +32,15 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Test with pytest
+    - name: Create .env_dev file
       run: |
-        echo "BOT_TOKEN_DEV=${{ secrets.BOT_TOKEN_DEV }}" >> .env_dev
-        echo "SERVER_URL_DEV=${{ secrets.SERVER_URL_DEV }}" >> .env_dev
-        echo "GOOGLE_TIMEZONE_DEV=${{ secrets.GOOGLE_TIMEZONE_DEV }}" >> .env_dev
-        echo "GOOGLE_CREDENTIALS_DEV=${{ secrets.GOOGLE_CREDENTIALS_DEV }}" >> .env_dev
+        echo "BOT_TOKEN_DEV=***" >> .env_dev
+        echo "SERVER_URL_DEV=***" >> .env_dev
+        echo "GOOGLE_TIMEZONE_DEV=***" >> .env_dev
+        echo "GOOGLE_CREDENTIALS_DEV=***" >> .env_dev
+  
+    - name: Run tests and generate report
+      run: |
         pytest --junitxml=pytest_report.xml
 
     - name: Upload test results
@@ -56,7 +59,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-  
+    needs: build
     steps:
     - name: Set up SSH for EC2
       uses: webfactory/ssh-agent@v0.5.4
