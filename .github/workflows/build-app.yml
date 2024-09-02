@@ -38,7 +38,21 @@ jobs:
         echo "SERVER_URL_DEV=${{ secrets.SERVER_URL_DEV }}" >> .env_dev
         echo "GOOGLE_TIMEZONE_DEV=${{ secrets.GOOGLE_TIMEZONE_DEV }}" >> .env_dev
         echo "GOOGLE_CREDENTIALS_DEV=${{ secrets.GOOGLE_CREDENTIALS_DEV }}" >> .env_dev
-        
+        pytest --junitxml=pytest_report.xml
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-report
+        path: pytest_report.xml
+
+    - name: Display test results
+      if: always()
+      uses: dorny/test-reporter@v1
+      with:
+        name: Pytest
+        path: pytest_report.xml
+        reporter: junit
 
   deploy:
     runs-on: ubuntu-latest
