@@ -43,6 +43,8 @@ jobs:
         echo "GOOGLE_CREDENTIALS_DEV=***" >> .env_dev
   
     - name: Test with pytest
+      env:
+        ENVIRONMENT: dev
       run: |
         python -m pytest --verbose --junit-xml=junit.xml
     - name: Publish Test Report
